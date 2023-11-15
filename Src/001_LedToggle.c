@@ -16,12 +16,29 @@
  ******************************************************************************
  */
 
-#include <stdint.h>
-
 #include "stm32f103xx.h"
+#include "stm32f103xx_GPIO_driver.h"
+
+void delay(void)
+{
+    for(uint32_t i=0;i<500000;i++);
+}
 
 int main(void)
 {
-    /* Loop forever */
-	for(;;);
+    GPIO_Handle_s GPIO_Led;
+    GPIO_Led.GPIOx_p = GPIOA;
+    GPIO_Led.GPIO_PinConfig.GPIOPinNumber = GPIO_Pin_0;
+    GPIO_Led.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_OUT_SPEED_HIGH;
+    GPIO_Led.GPIO_PinConfig.GPIOPinSpeed = GPIO_MODE_OUT_SPEED_HIGH;
+    GPIO_Led.GPIO_PinConfig.GPIOPinCNF = GPIO_CNF_OUT_PS_PL;
+
+    GPIO_PCLK_Control(GPIOA, ENABLE);
+    GPIO_Init(&GPIO_Led);
+
+    while(1)
+    {
+        GPIO_TogglePin(GPIOA, GPIO_Pin_0);
+        delay();
+    }
 }

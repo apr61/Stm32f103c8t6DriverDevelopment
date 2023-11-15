@@ -8,42 +8,90 @@
 #ifndef STM32F103XX_GPIO_DRIVER_H_
 #define STM32F103XX_GPIO_DRIVER_H_
 
+/********************************* Abbreviations ************************************/
+/*
+    GPIO : General Purpose Input and Output
+    PCLK : Peripheral Clock
+    IRQ  : Interrupt Request 
+*/
+
+/********************************* Includes ************************************/
 #include "stm32f103xx.h"
 
 // GPIO configuration
 typedef struct {
-  uint8_t GPIOPinNumber;
-  uint8_t GPIOPinMode;
-  uint8_t GPIOPinSpeed;
-  uint8_t GPIOPinPuPdControl;
-  uint8_t GPIOPinOPType;
-  uint8_t GPIOPinAltFunction;
-} GPIO_PinConfig_t;
+  uint8_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
+  uint8_t GPIOPinMode;  /* Refer to @GPIO_PIN_MODES, @GPIO_OUT_SPEED */
+  uint8_t GPIOPinSpeed; /* Refer to @GPIO_OUT_SPEED */
+  uint8_t GPIOPinCNF; /* Refer to @GPIO_PIN_IN_CNF, @GPIO_PIN_OUT_CNF */
+} GPIO_PinConfig_s;
 
 // GPIO Handle
 typedef struct {
   GPIO_RegDef_s *GPIOx_p;
-  GPIO_PinConfig_t GPIO_PinConfig;
+  GPIO_PinConfig_s GPIO_PinConfig;
 } GPIO_Handle_s;
+
+/* @GPIO_PIN_NUMBERS */
+#define GPIO_PIN_0                           0
+#define GPIO_PIN_1                           1
+#define GPIO_PIN_2                           2
+#define GPIO_PIN_3                           3
+#define GPIO_PIN_4                           4
+#define GPIO_PIN_5                           5
+#define GPIO_PIN_6                           6
+#define GPIO_PIN_7                           7
+#define GPIO_PIN_8                           8
+#define GPIO_PIN_9                           9
+#define GPIO_PIN_10                          10
+#define GPIO_PIN_11                          11
+#define GPIO_PIN_12                          12
+#define GPIO_PIN_13                          13
+#define GPIO_PIN_14                          14
+#define GPIO_PIN_15                          15
+
+/*
+    @GPIO_PIN_MODES
+*/
+#define GPIO_MODE_IN                          0 /* GPIO MODE INT */
+
+// Input Types @GPIO_PIN_IN_CNF
+#define GPIO_CNF_IN_ANALOG                    0 /* GPIO INPUT ANALOG */
+#define GPIO_CNF_IN_FLOATING                  1 /* GPIO INPUT Pull Up Pull Down */
+#define GPIO_CNF_IN_PU_UP_DOWN                2 /* GPIO INPUT Pull Up Pull Down */
+
+// Output Types @GPIO_PIN_OUT_CNF
+#define GPIO_CNF_OUT_PS_PL                    0 /* GPIO PUSH PULL */
+#define GPIO_CNF_OUT_OPEN_DR                  1 /* GPIO OPEN DRAIN */
+#define GPIO_CNF_OUT_ALT_FUN_PS_PL            2 /* Alt fun PUSH PULL */   
+#define GPIO_CNF_OUT_ALT_FUN_OPEN_DR          3 /* Alt fun OPEN DRAIN */   
+
+// Speed of output mode, @GPIO_OUT_SPEED
+#define GPIO_MODE_OUT_SPEED_MEDIUM            1 /* GPIO MODE OUT, MAX speed 10MHz */
+#define GPIO_MODE_OUT_SPEED_LOW               2 /* GPIO MODE OUT, MAX speed 2MHz */
+#define GPIO_MODE_OUT_SPEED_HIGH              3 /* GPIO MODE OUT, MAX speed 50MHz */
 
 /* GPIO API's */
 
+/* GPIO peripheral clock enable and disable */
+void GPIO_PCLK_Control(GPIO_RegDef_s * GPIOx_p, uint8_t EnOrDi_u8);
+
 /* GPIO Init, DeInit*/
-void GPIO_Init(void);
-void GPIO_DeInit(void);
+void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p);
+void GPIO_DeInit(GPIO_RegDef_s * GPIOx_p);
 
 /* GPIO read/write */
-void GPIO_ReadInputPin(void);
-void GPIO_ReadInputPort(void);
-void GPIO_WriteInputPin(void);
-void GPIO_WriteInputPort(void);
-void GPIO_TogglePin(void);
-
-/* GPIO peripheral clock enable and disable */
-void GPIO_PCLK_Control(void);
+uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8);
+uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p);
+void GPIO_WriteInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t Value_u8);
+void GPIO_WriteInputPort(GPIO_RegDef_s * GPIOx_p, uint16_t Value_u16);
+void GPIO_TogglePin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8);
 
 /* GPIO interrupt Configuration and handling */
-void GPIO_IQR_Config(void);
-void GPIO_IQR_Handling(void);
+void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8, uint8_t EnOrDi_u8);
+void GPIO_IRQ_Handling(uint8_t PinNumber_u8);
 
 #endif /* STM32F103XX_GPIO_DRIVER_H_ */
+
+/********************************* END of file ************************************/
+
