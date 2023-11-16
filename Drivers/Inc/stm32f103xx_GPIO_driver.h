@@ -53,6 +53,22 @@ typedef struct {
 /*
     @GPIO_PIN_MODES
 */
+
+/* General Purpose input mode */
+#define GPIO_MODE_IN                       0x00000000u; /* 0b00000000000000000000000000000000 */
+#define GPIO_MODE_IN_ANALOG                0x00000001u; /* 0b00000000000000000000000000000001 */
+#define GPIO_MODE_IN_PU_PD                 0x00000002u; /* 0b00000000000000000000000000000010 - PULL UP/DOWN */
+#define GPIO_MODE_IN_FLOATING              0x00000003u; /* 0b00000000000000000000000000000011 */
+
+/* General Purpose output mode */
+#define GPIO_MODE_OUT                      0x00000004u; /* 0b00000000000000000000000000000100 */
+#define GPIO_MODE_OUT_PUSH_PULL            0x00000005u; /* 0b00000000000000000000000000000101 */
+#define GPIO_MODE_OUT_OD                   0x00000006u; /* 0b00000000000000000000000000000110 - Open Drain */
+
+/* Alternate functionality mode for Output */
+#define GPIO_MODE_OUT_ALT_PUSH_PULL        0x00000007u; /* 0b00000000000000000000000000000111 */
+#define GPIO_MODE_OUT_ALT_OD               0x00000008u; /* 0b00000000000000000000000000001000 - Open Drain */
+
 #define GPIO_MODE_IN                          0 /* GPIO MODE INT */
 
 // Input Types @GPIO_PIN_IN_CNF
@@ -67,9 +83,9 @@ typedef struct {
 #define GPIO_CNF_OUT_ALT_FUN_OPEN_DR          3 /* Alt fun OPEN DRAIN */   
 
 // Speed of output mode, @GPIO_OUT_SPEED
-#define GPIO_MODE_OUT_SPEED_MEDIUM            1 /* GPIO MODE OUT, MAX speed 10MHz */
-#define GPIO_MODE_OUT_SPEED_LOW               2 /* GPIO MODE OUT, MAX speed 2MHz */
-#define GPIO_MODE_OUT_SPEED_HIGH              3 /* GPIO MODE OUT, MAX speed 50MHz */
+#define GPIO_SPEED_MEDIUM            1 /* GPIO MODE OUT, MAX speed 10MHz */
+#define GPIO_SPEED_LOW               2 /* GPIO MODE OUT, MAX speed 2MHz */
+#define GPIO_SPEED_HIGH              3 /* GPIO MODE OUT, MAX speed 50MHz */
 
 /* GPIO API's */
 

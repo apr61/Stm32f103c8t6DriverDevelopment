@@ -86,59 +86,78 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 {
     uint32_t Temp_u32 = 0; // Temp Register
     
-    /*
-        1. Configure mode of GPIO
-            - Input Mode
-    */ 
+    /* Check for First half bits (0 - 7) */
     if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
     {
+        /*
+            1. Configure mode of GPIO
+                - Input Mode
+        */ 
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode << (4 * GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber));
         GPIO_Handle_p->GPIOx_p->CRL |= Temp_u32;
-    }
-    else
-    {
-        Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode << (4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)));
-        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
-    }
-
-    Temp_u32 = 0;
-    
-    // 2. Configure the speed
-    if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
-    {
+        
+        Temp_u32 = 0;
+        
+        // 2. Configure the speed
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << (4 * GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber));
         GPIO_Handle_p->GPIOx_p->CRL |= Temp_u32;
-    }
-    else
-    {
-        Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << (4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)));
-        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
-    }
 
-    Temp_u32 = 0;
-    
-    /*
-    *    3. Configure the GPIO Pin, 
-    *    Input - (Pull Up - Pull Down or Floating or Analog), 
-    *    Output - General Purpose / Alternate Function (Open-Drain or Push-Pull) 
-    */
-    
-    if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
-    {
+        Temp_u32 = 0;
+
+        /*
+        *    3. Configure the GPIO Pin, 
+        *    Input - (Pull Up - Pull Down or Floating or Analog), 
+        *    Output - General Purpose / Alternate Function (Open-Drain or Push-Pull) 
+        */
+
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinCNF << ((4 * GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber) + 2));
         GPIO_Handle_p->GPIOx_p->CRL |= Temp_u32;
+
+        Temp_u32 = 0;
+
+        // 4. Alternate Functioning
+        // TODO :: 
+
+        // 5. Interrupt based
+        // TODO :: 
+        
     }
-    else
+    else     /* Check for Second half bits (8 - 15) */
     {
-        Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << ((4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)) + 2));
+        /*
+            1. Configure mode of GPIO
+                - Input Mode
+        */ 
+        Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode << (4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)));
         GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
+        
+        Temp_u32 = 0;
+
+        // 2. Configure the speed
+
+        Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << (4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)));
+        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
+
+        Temp_u32 = 0;
+
+        /*
+        *    3. Configure the GPIO Pin, 
+        *    Input - (Pull Up - Pull Down or Floating or Analog), 
+        *    Output - General Purpose / Alternate Function (Open-Drain or Push-Pull) 
+        */
+
+        Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinCNF << ((4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)) + 2));
+        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
+
+        Temp_u32 = 0;
+
+        // 4. Alternate Functioning
+        // TODO :: 
+
+        // 5. Interrupt based
+        // TODO :: 
     }
 
-    // 4. Alternate Functioning
-    // TODO :: 
-    
-    // 5. Interrupt based
-    // TODO :: 
 } /* END of GPIO_Init */
 
 /*
