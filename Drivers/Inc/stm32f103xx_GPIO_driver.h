@@ -21,9 +21,9 @@
 // GPIO configuration
 typedef struct {
   uint8_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
-  uint8_t GPIOPinMode;  /* Refer to @GPIO_PIN_MODES, @GPIO_OUT_SPEED */
-  uint8_t GPIOPinSpeed; /* Refer to @GPIO_OUT_SPEED */
-  uint8_t GPIOPinCNF; /* Refer to @GPIO_PIN_IN_CNF, @GPIO_PIN_OUT_CNF */
+  uint8_t GPIOPinMode;  /* Refer to @GPIO_PIN_MODES */
+  uint8_t GPIOPinSpeed; /* Refer to @GPIO_SPEED */
+  uint8_t GPIOPinPull; /* Refer to @GPIO_Pull_up_down */
 } GPIO_PinConfig_s;
 
 // GPIO Handle
@@ -55,37 +55,42 @@ typedef struct {
 */
 
 /* General Purpose input mode */
-#define GPIO_MODE_IN                       0x00000000u; /* 0b00000000000000000000000000000000 */
-#define GPIO_MODE_IN_ANALOG                0x00000001u; /* 0b00000000000000000000000000000001 */
-#define GPIO_MODE_IN_PU_PD                 0x00000002u; /* 0b00000000000000000000000000000010 - PULL UP/DOWN */
-#define GPIO_MODE_IN_FLOATING              0x00000003u; /* 0b00000000000000000000000000000011 */
+#define GPIO_MODE_IN                       0x00000000u /* 0b00000000000000000000000000000000 */
+#define GPIO_MODE_ANALOG                   0x00000001u /* 0b00000000000000000000000000000001 */
 
 /* General Purpose output mode */
-#define GPIO_MODE_OUT                      0x00000004u; /* 0b00000000000000000000000000000100 */
-#define GPIO_MODE_OUT_PUSH_PULL            0x00000005u; /* 0b00000000000000000000000000000101 */
-#define GPIO_MODE_OUT_OD                   0x00000006u; /* 0b00000000000000000000000000000110 - Open Drain */
+#define GPIO_MODE_OUT_PUSH_PULL            0x00000005u /* 0b00000000000000000000000000000101 */
+#define GPIO_MODE_OUT_OD                   0x00000006u /* 0b00000000000000000000000000000110 - Open Drain */
 
 /* Alternate functionality mode for Output */
-#define GPIO_MODE_OUT_ALT_PUSH_PULL        0x00000007u; /* 0b00000000000000000000000000000111 */
-#define GPIO_MODE_OUT_ALT_OD               0x00000008u; /* 0b00000000000000000000000000001000 - Open Drain */
+#define GPIO_MODE_ALT_PUSH_PULL            0x00000007u /* 0b00000000000000000000000000000111 */
+#define GPIO_MODE_ALT_OD                   0x00000008u /* 0b00000000000000000000000000001000 - Open Drain */
 
-#define GPIO_MODE_IN                          0 /* GPIO MODE INT */
+/*
+ * 	@GPIO_Pull_up_down defines
+ *
+ */
+#define  GPIO_NO_PULL        			   0x00000000u   /*!< No Pull-up or Pull-down activation  */
+#define  GPIO_PULL_UP        			   0x00000001u   /*!< Pull-up activation                  */
+#define  GPIO_PULL_DOWN      			   0x00000002u   /*!< Pull-down activation                */
 
-// Input Types @GPIO_PIN_IN_CNF
-#define GPIO_CNF_IN_ANALOG                    0 /* GPIO INPUT ANALOG */
-#define GPIO_CNF_IN_FLOATING                  1 /* GPIO INPUT Pull Up Pull Down */
-#define GPIO_CNF_IN_PU_UP_DOWN                2 /* GPIO INPUT Pull Up Pull Down */
+// Speed of output mode, @GPIO_SPEED
+#define GPIO_SPEED_MEDIUM            0x00000001u /* GPIO MODE OUT, MAX speed 10MHz */
+#define GPIO_SPEED_LOW               0x00000002u/* GPIO MODE OUT, MAX speed 2MHz */
+#define GPIO_SPEED_HIGH              0x00000003u /* GPIO MODE OUT, MAX speed 50MHz */
 
-// Output Types @GPIO_PIN_OUT_CNF
-#define GPIO_CNF_OUT_PS_PL                    0 /* GPIO PUSH PULL */
-#define GPIO_CNF_OUT_OPEN_DR                  1 /* GPIO OPEN DRAIN */
-#define GPIO_CNF_OUT_ALT_FUN_PS_PL            2 /* Alt fun PUSH PULL */   
-#define GPIO_CNF_OUT_ALT_FUN_OPEN_DR          3 /* Alt fun OPEN DRAIN */   
+/*
+ *	Bit manipulations for GPIO CRL and CRH registers
+ * */
 
-// Speed of output mode, @GPIO_OUT_SPEED
-#define GPIO_SPEED_MEDIUM            1 /* GPIO MODE OUT, MAX speed 10MHz */
-#define GPIO_SPEED_LOW               2 /* GPIO MODE OUT, MAX speed 2MHz */
-#define GPIO_SPEED_HIGH              3 /* GPIO MODE OUT, MAX speed 50MHz */
+#define GPIO_CR_MODE_IN                          0 /* GPIO MODE INT */
+#define GPIO_CR_CNF_IN_ANALOG                    0 /* 00: Analog mode */
+#define GPIO_CR_CNF_IN_FLOATING                  1 /* 01: Floating input (reset state) */
+#define GPIO_CR_CNF_IN_PU_UP_DOWN                2 /* 10: Input with pull-up / pull-down */
+#define GPIO_CR_CNF_OUT_GP_PS_PL                 0 /* 00: General purpose output push-pull */
+#define GPIO_CR_CNF_OUT_GP_OPEN_DR               1 /* 01: General purpose output Open-drain */
+#define GPIO_CR_CNF_OUT_ALT_FUN_PS_PL            2 /* 10: Alternate function output Push-pull */
+#define GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR          3 /* 11: Alternate function output Open-drain */
 
 /* GPIO API's */
 

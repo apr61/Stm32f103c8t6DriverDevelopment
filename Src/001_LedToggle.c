@@ -29,9 +29,9 @@ int main(void)
     GPIO_Handle_s GPIO_Led;
     GPIO_Led.GPIOx_p = GPIOA;
     GPIO_Led.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_5;
-    GPIO_Led.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_OUTPUT;
+    GPIO_Led.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_OUT_PUSH_PULL;
     GPIO_Led.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
-    GPIO_Led.GPIO_PinConfig.GPIOPinCNF = GPIO_CNF_OUT_PS_PL;
+    GPIO_Led.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
 
     GPIO_PCLK_Control(GPIOA, ENABLE);
     GPIO_Init(&GPIO_Led);

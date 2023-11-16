@@ -48,7 +48,7 @@
     BASE address of peripherals which are hanging to APB2
 */
 
-#define GPIOA_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0800) //0x00000800UL
+#define GPIOA_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x00000800UL) //0x00000800UL
 #define GPIOB_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0C00)
 #define GPIOC_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1000)
 #define GPIOD_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1400)
@@ -131,7 +131,7 @@ typedef struct {
     Clock enable macros for GPIO, AFIO
 */
 
-#define GPIOA_PCLK_EN()                      (RCC->APB2ENR |= (1 << 2))
+#define GPIOA_PCLK_EN()                      (RCC->APB2ENR |= (0x1UL << (2U)))
 #define GPIOB_PCLK_EN()                      (RCC->APB2ENR |= (1 << 3))
 #define GPIOC_PCLK_EN()                      (RCC->APB2ENR |= (1 << 4))
 #define GPIOD_PCLK_EN()                      (RCC->APB2ENR |= (1 << 5))
