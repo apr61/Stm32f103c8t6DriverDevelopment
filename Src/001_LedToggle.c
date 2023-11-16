@@ -21,14 +21,14 @@
 
 void delay(void)
 {
-    for(uint32_t i=0;i<500000;i++);
+    for(uint32_t i=0;i<500000/4;i++);
 }
 
 int main(void)
 {
     GPIO_Handle_s GPIO_Led;
     GPIO_Led.GPIOx_p = GPIOA;
-    GPIO_Led.GPIO_PinConfig.GPIOPinNumber = GPIO_Pin_0;
+    GPIO_Led.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_5;
     GPIO_Led.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_OUT_SPEED_HIGH;
     GPIO_Led.GPIO_PinConfig.GPIOPinSpeed = GPIO_MODE_OUT_SPEED_HIGH;
     GPIO_Led.GPIO_PinConfig.GPIOPinCNF = GPIO_CNF_OUT_PS_PL;
@@ -38,7 +38,9 @@ int main(void)
 
     while(1)
     {
-        GPIO_TogglePin(GPIOA, GPIO_Pin_0);
+    	GPIO_WriteInputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
+        delay();
+        GPIO_WriteInputPin(GPIOA, GPIO_PIN_5, GPIO_RESET_PIN);
         delay();
     }
 }

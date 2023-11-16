@@ -93,12 +93,12 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
     {
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode << (4 * GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber));
-        GPIO_Handle_p->GPIO_RegDef.CRL |= Temp_u32;
+        GPIO_Handle_p->GPIOx_p->CRL |= Temp_u32;
     }
     else
     {
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode << (4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)));
-        GPIO_Handle_p->GPIO_RegDef.CRH |= Temp_u32;
+        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
     }
 
     Temp_u32 = 0;
@@ -107,12 +107,12 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
     {
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << (4 * GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber));
-        GPIO_Handle_p->GPIO_RegDef.CRL |= Temp_u32;
+        GPIO_Handle_p->GPIOx_p->CRL |= Temp_u32;
     }
     else
     {
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << (4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)));
-        GPIO_Handle_p->GPIO_RegDef.CRH |= Temp_u32;
+        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
     }
 
     Temp_u32 = 0;
@@ -126,12 +126,12 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
     {
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinCNF << ((4 * GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber) + 2));
-        GPIO_Handle_p->GPIO_RegDef.CRL |= Temp_u32;
+        GPIO_Handle_p->GPIOx_p->CRL |= Temp_u32;
     }
     else
     {
         Temp_u32 = (GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed << ((4 * (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber - 8)) + 2));
-        GPIO_Handle_p->GPIO_RegDef.CRH |= Temp_u32;
+        GPIO_Handle_p->GPIOx_p->CRH |= Temp_u32;
     }
 
     // 4. Alternate Functioning
@@ -213,7 +213,7 @@ uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p)
 */
 void GPIO_WriteInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t Value_u8)
 {
-    if(GPIO_PIN_SET == Value_u8)
+    if((uint8_t)GPIO_SET_PIN == Value_u8)
     {
         GPIOx_p->ODR |= (uint32_t)(1 << PinNumber_u8);
     }

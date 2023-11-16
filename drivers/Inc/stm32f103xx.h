@@ -48,7 +48,7 @@
     BASE address of peripherals which are hanging to APB2
 */
 
-#define GPIOA_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0800)
+#define GPIOA_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0800) //0x00000800UL
 #define GPIOB_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0C00)
 #define GPIOC_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1000)
 #define GPIOD_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1400)
@@ -153,11 +153,11 @@ typedef struct {
     GPIO Register Reset macros
 */
 
-#define GPIOA_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 2)); (RCC->APB2RSTR &= ~(1 << 2))} while(0)
-#define GPIOB_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 3)); (RCC->APB2RSTR &= ~(1 << 3))} while(0)
-#define GPIOC_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 4)); (RCC->APB2RSTR &= ~(1 << 4))} while(0)
-#define GPIOD_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 5)); (RCC->APB2RSTR &= ~(1 << 5))} while(0)
-#define GPIOE_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 6)); (RCC->APB2RSTR &= ~(1 << 6))} while(0)
+#define GPIOA_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 2)); (RCC->APB2RSTR &= ~(1 << 2));} while(0)
+#define GPIOB_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 3)); (RCC->APB2RSTR &= ~(1 << 3));} while(0)
+#define GPIOC_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 4)); (RCC->APB2RSTR &= ~(1 << 4));} while(0)
+#define GPIOD_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 5)); (RCC->APB2RSTR &= ~(1 << 5));} while(0)
+#define GPIOE_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 6)); (RCC->APB2RSTR &= ~(1 << 6));} while(0)
 
 /*
     Clock enable macros for I2C
