@@ -1,5 +1,0 @@
-"./Src/001_LedToggle.o"
-"./Src/syscalls.o"
-"./Src/sysmem.o"
-"./Startup/startup_stm32f103c8tx.o"
-"./drivers/Src/stm32f103xx_GPIO_driver.o"
