@@ -75,15 +75,15 @@ typedef struct {
 #define  GPIO_PULL_DOWN      			   0x00000002u   /*!< Pull-down activation                */
 
 // Speed of output mode, @GPIO_SPEED
-#define GPIO_SPEED_MEDIUM            0x00000001u /* GPIO MODE OUT, MAX speed 10MHz */
-#define GPIO_SPEED_LOW               0x00000002u/* GPIO MODE OUT, MAX speed 2MHz */
-#define GPIO_SPEED_HIGH              0x00000003u /* GPIO MODE OUT, MAX speed 50MHz */
+#define GPIO_SPEED_MEDIUM                  0x1u /* GPIO MODE OUT, MAX speed 10MHz */
+#define GPIO_SPEED_LOW                     0x2u/* GPIO MODE OUT, MAX speed 2MHz */
+#define GPIO_SPEED_HIGH                    0x3u /* GPIO MODE OUT, MAX speed 50MHz */
 
 /*
  *	Bit manipulations for GPIO CRL and CRH registers
  * */
 
-#define GPIO_CR_MODE_IN                          0 /* GPIO MODE INT */
+#define GPIO_CR_MODE_IN                          0 /* 00: GPIO MODE INPUT */
 #define GPIO_CR_CNF_IN_ANALOG                    0 /* 00: Analog mode */
 #define GPIO_CR_CNF_IN_FLOATING                  1 /* 01: Floating input (reset state) */
 #define GPIO_CR_CNF_IN_PU_UP_DOWN                2 /* 10: Input with pull-up / pull-down */
@@ -104,8 +104,8 @@ void GPIO_DeInit(GPIO_RegDef_s * GPIOx_p);
 /* GPIO read/write */
 uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8);
 uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p);
-void GPIO_WriteInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t Value_u8);
-void GPIO_WriteInputPort(GPIO_RegDef_s * GPIOx_p, uint16_t Value_u16);
+void GPIO_WriteOutputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t Value_u8);
+void GPIO_WriteOutputPort(GPIO_RegDef_s * GPIOx_p, uint16_t Value_u16);
 void GPIO_TogglePin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8);
 
 /* GPIO interrupt Configuration and handling */

@@ -84,17 +84,63 @@ void GPIO_PCLK_Control(GPIO_RegDef_s * GPIOx_p, uint8_t EnOrDi_u8)
 */
 void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 {
-    uint8_t mode = 0x2;
+    uint8_t Mode_CNF = 0x0U; // Store MODEx and CNFx value for each pin (x = 0,1,2,.....15)
+    // MODEx [1:0] && CNFx [1:0] Configurations
+    switch(GPIO_Handle_p->GPIO_PinConfig.PinMode)
+    {
+        // GPIO output mode PUSH PULL
+        case GPIO_MODE_OUT_PUSH_PULL:
+            Mode_CNF = ((GPIO_CR_CNF_OUT_GP_PS_PL << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            break;
+        // GPIO output mode Open Drain
+        case GPIO_MODE_OUT_OD:
+            Mode_CNF = ((GPIO_CR_CNF_OUT_GP_OPEN_DR << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            break;
+        // Alternate functionality PUSH PULL
+        case GPIO_MODE_ALT_PUSH_PULL:
+            Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_PS_PL << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            break;
+        // Alternate functionality open drain
+        case GPIO_MODE_ALT_OD:
+            Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            break;
+        // GPIO Input mode
+        case GPIO_MODE_IN:
+            // GPIO pull Floating
+            if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_NO_PULL)
+            {
+                Mode_CNF = ((GPIO_CR_CNF_IN_FLOATING << 2) | GPIO_CR_MODE_IN);
+            } 
+            else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_UP) // GPIO input PULL UP
+            {
+                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+            }
+            else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_DOWN) // GPIO input PULL DOWN
+            {
+                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+            }
+            else // GPIO input PULL UP/DOWN
+            {
+                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+            }
+            break;
+        // GPIO INPUT analog
+        case GPIO_MODE_ANALOG:
+            Mode_CNF = ((GPIO_CR_CNF_IN_ANALOG << 2) | GPIO_CR_MODE_IN);
+            break;
+        default:
+            break;
+    }
     /* Check for First half bits (0 - 7) */
     if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber <= 7)
     {
     	GPIO_Handle_p->GPIOx_p->CRL &= ~(0xF << (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber * 4));
-    	GPIO_Handle_p->GPIOx_p->CRL |= (mode << (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber * 4));
+    	GPIO_Handle_p->GPIOx_p->CRL |= (Mode_CNF << (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber * 4));
     }
     else     /* Check for Second half bits (8 - 15) */
     {
     	GPIO_Handle_p->GPIOx_p->CRH &= ~(0xF << (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber * 4));
-    	GPIO_Handle_p->GPIOx_p->CRH |= (mode << (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber * 4));
+    	GPIO_Handle_p->GPIOx_p->CRH |= (Mode_CNF << (GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber * 4));
     }
 
 } /* END of GPIO_Init */
@@ -163,7 +209,7 @@ uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p)
 }/* END of GPIO_ReadInputPort */
 
 /*
-    Function name    :    GPIO_WriteInputPin
+    Function name    :    GPIO_WriteOutputPin
     Description      :    This function writes the input pin value
     Parameters       :    GPIO_RegDef_s * GPIOx_p : Pointer to GPIO peripheral
                           uint8_t GPIO_Pin_u8 : GPIO pin Number
@@ -171,7 +217,7 @@ uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p)
     Return           :    None
     Note             :    None
 */
-void GPIO_WriteInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t Value_u8)
+void GPIO_WriteOutputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t Value_u8)
 {
     if((uint8_t)GPIO_SET_PIN == Value_u8)
     {
@@ -184,14 +230,14 @@ void GPIO_WriteInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8, uint8_t V
 }/* END of GPIO_WriteInputPin */
 
 /*
-    Function name    :    GPIO_WriteInputPort
+    Function name    :    GPIO_WriteOutputPort
     Description      :    This function writes the input port value
     Parameters       :    GPIO_RegDef_s * GPIOx_p : Pointer to GPIO peripheral
                           uint16_t Value_u16 : GPIO 16-bit value
     Return           :    None
     Note             :    None
 */
-void GPIO_WriteInputPort(GPIO_RegDef_s * GPIOx_p, uint16_t Value_u16)
+void GPIO_WriteOutputPort(GPIO_RegDef_s * GPIOx_p, uint16_t Value_u16)
 {
     GPIOx_p->ODR = Value_u16;
 }/* END of GPIO_WriteInputPort */
