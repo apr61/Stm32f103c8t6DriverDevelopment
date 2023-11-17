@@ -42,7 +42,7 @@
 #define PERIPH_BASE_ADDR                     0x40000000U
 #define APB1_PERIPH_BASE_ADDR                PERIPH_BASE_ADDR
 #define APB2_PERIPH_BASE_ADDR                0x40010000U
-#define AHB_PERIPH_BASE_ADDR                 0x40018000U
+#define AHB_PERIPH_BASE_ADDR                 0x40020000U
 
 /*
     BASE address of peripherals which are hanging to APB2
