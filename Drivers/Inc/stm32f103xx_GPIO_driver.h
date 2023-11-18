@@ -55,16 +55,21 @@ typedef struct {
 */
 
 /* General Purpose input mode */
-#define GPIO_MODE_IN                       0x00000000u /* 0b00000000000000000000000000000000 */
-#define GPIO_MODE_ANALOG                   0x00000001u /* 0b00000000000000000000000000000001 */
+#define GPIO_MODE_IN                       1
+#define GPIO_MODE_ANALOG                   2
 
 /* General Purpose output mode */
-#define GPIO_MODE_OUT_PUSH_PULL            0x00000005u /* 0b00000000000000000000000000000101 */
-#define GPIO_MODE_OUT_OD                   0x00000006u /* 0b00000000000000000000000000000110 - Open Drain */
+#define GPIO_MODE_OUT_PUSH_PULL            3
+#define GPIO_MODE_OUT_OD                   4
 
 /* Alternate functionality mode for Output */
-#define GPIO_MODE_ALT_PUSH_PULL            0x00000007u /* 0b00000000000000000000000000000111 */
-#define GPIO_MODE_ALT_OD                   0x00000008u /* 0b00000000000000000000000000001000 - Open Drain */
+#define GPIO_MODE_ALT_PUSH_PULL            5
+#define GPIO_MODE_ALT_OD                   6 /* Open Drain */
+
+/* GPIO interrupt */
+#define GPIO_MODE_INT_FT                   7 /* Interrupt Falling*/
+#define GPIO_MODE_INT_RT                   8 /* Interrupt Raising */
+#define GPIO_MODE_INT_RFT                  9 /* Interrupt Raising - Falling */
 
 /*
  * 	@GPIO_Pull_up_down defines
