@@ -38,9 +38,9 @@ int main(void)
 
     while(1)
     {
-    	GPIO_WriteInputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
+    	GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
         delay();
-        GPIO_WriteInputPin(GPIOA, GPIO_PIN_5, GPIO_RESET_PIN);
+        GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_RESET_PIN);
         delay();
     }
 }

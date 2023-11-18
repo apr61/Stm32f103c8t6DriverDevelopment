@@ -86,7 +86,7 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 {
     uint8_t Mode_CNF = 0x0U; // Store MODEx and CNFx value for each pin (x = 0,1,2,.....15)
     // MODEx [1:0] && CNFx [1:0] Configurations
-    switch(GPIO_Handle_p->GPIO_PinConfig.PinMode)
+    switch(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode)
     {
         // GPIO output mode PUSH PULL
         case GPIO_MODE_OUT_PUSH_PULL:
@@ -114,14 +114,14 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_UP) // GPIO input PULL UP
             {
                 Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+                /* Set the corresponding ODR bit */
+                GPIO_Handle_p->GPIOx_p->BSRR |= (1 << GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber);
             }
-            else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_DOWN) // GPIO input PULL DOWN
+            else // GPIO input PULL DOWN
             {
                 Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
-            }
-            else // GPIO input PULL UP/DOWN
-            {
-                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+                /* Reset the corresponding ODR bit */
+                GPIO_Handle_p->GPIOx_p->BRR |= (1 << GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber);
             }
             break;
         // GPIO INPUT analog
@@ -189,8 +189,8 @@ void GPIO_DeInit(GPIO_RegDef_s * GPIOx_p)
 */
 uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8)
 {
-    uint8_t TempValue_u8 = 0;
-    TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x00000001); 
+    uint8_t TempValue_u8;
+    TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x01);
     return TempValue_u8;
 }/* END of GPIO_ReadInputPin */
 
