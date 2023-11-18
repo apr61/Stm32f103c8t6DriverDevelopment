@@ -117,6 +117,10 @@ typedef struct {
   volatile uint32_t CSR; /* Control/status register, Address offset : 0x24 */
 } RCC_RegDef_t;
 
+// EXTI Register def structure
+
+
+
 /* GPIO Peripheral defines */
 
 #define GPIOA                                ((GPIO_RegDef_s *)GPIOA_BASE_ADDR)
@@ -126,6 +130,7 @@ typedef struct {
 #define GPIOE                                ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
 
 #define RCC                                  ((RCC_RegDef_t *)RCC_BASE_ADDR)
+#define EXTI                                 ((RCC_RegDef_t *)EXTI_BASE_ADDR)
 
 /*
     Clock enable macros for GPIO, AFIO
