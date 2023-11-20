@@ -21,7 +21,7 @@
 // GPIO configuration
 typedef struct {
   uint8_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
-  uint8_t GPIOPinMode;  /* Refer to @GPIO_PIN_MODES */
+  uint32_t GPIOPinMode;  /* Refer to @GPIO_PIN_MODES */
   uint8_t GPIOPinSpeed; /* Refer to @GPIO_SPEED */
   uint8_t GPIOPinPull; /* Refer to @GPIO_Pull_up_down */
 } GPIO_PinConfig_s;
@@ -54,6 +54,12 @@ typedef struct {
     @GPIO_PIN_MODES
 */
 
+#define EXTI_MODE						   0x10000000u
+#define GPIO_MODE_IT          			   0x00010000u
+#define GPIO_MODE_EVT         			   0x00020000u
+#define RISING_EDGE           			   0x00100000u
+#define FALLING_EDGE          			   0x00200000u
+
 /* General Purpose input mode */
 #define GPIO_MODE_IN                       1
 #define GPIO_MODE_ANALOG                   2
@@ -66,10 +72,15 @@ typedef struct {
 #define GPIO_MODE_ALT_PUSH_PULL            5
 #define GPIO_MODE_ALT_OD                   6 /* Open Drain */
 
-/* GPIO interrupt */
-#define GPIO_MODE_INT_FT                   7 /* Interrupt Falling*/
-#define GPIO_MODE_INT_RT                   8 /* Interrupt Raising */
-#define GPIO_MODE_INT_RFT                  9 /* Interrupt Raising - Falling */
+/* GPIO External interrupt - Event */
+#define GPIO_MODE_INT_FALLING_TRI                   0x10110000u /* External Interrupt Falling Edge */
+#define GPIO_MODE_INT_RAISING_TRI                   0x10210000u /* External Interrupt Raising Edge */
+#define GPIO_MODE_INT_RAISING_FALLING               0x10310000u /* External Interrupt Raising - Falling */
+
+#define GPIO_MODE_EVT_FALLING_TRI                   0x10120000u /* External Event Falling Edge */
+#define GPIO_MODE_EVT_RAISING_TRI                   0x10220000u /* External Event Raising Edge */
+#define GPIO_MODE_EVT_RAISING_FALLING               0x10320000u /* External Event Raising - Falling */
+
 
 /*
  * 	@GPIO_Pull_up_down defines

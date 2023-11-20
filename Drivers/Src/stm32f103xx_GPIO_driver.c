@@ -85,8 +85,14 @@ void GPIO_PCLK_Control(GPIO_RegDef_s * GPIOx_p, uint8_t EnOrDi_u8)
 void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 {
     uint8_t Mode_CNF = 0x0U; // Store MODEx and CNFx value for each pin (x = 0,1,2,.....15)
+<<<<<<< Updated upstream
     uint8_t PinNumber = GPIO_Handle_p->GPIO_PinConfig.PinNumber;
     uint8_t bitFieldOffSet;
+=======
+    uint32_t Temp_u32;
+    uint32_t Bitmask_u32;
+    uint32_t Position_u32 = GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber;
+>>>>>>> Stashed changes
     // MODEx [1:0] && CNFx [1:0] Configurations
     switch(GPIO_Handle_p->GPIO_PinConfig.PinMode)
     {
@@ -108,6 +114,9 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             break;
         // GPIO Input mode
         case GPIO_MODE_IN:
+        case GPIO_MODE_INT_FALLING_TRI:
+        case GPIO_MODE_INT_RAISING_TRI:
+        case GPIO_MODE_INT_RAISING_FALLING:
             // GPIO pull Floating
             if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_NO_PULL)
             {
@@ -184,6 +193,7 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
         EXTI->RTSR &= ~(1 << PinNumber);
     }
 
+<<<<<<< Updated upstream
     /* Raising - Falling edge trigger */
     if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_IT_RAISING_FALLING_TRI)
     {
@@ -198,6 +208,25 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     
     /* Configure IMR for EXTI interrupt delivery */
     EXTI->IMR |= (1 << PinNumber);
+=======
+    /*--------------------- EXTI Mode Configuration ------------------------*/
+    if((GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode & EXTI_MODE) == EXTI_MODE)
+    {
+    	// Alternate functioning clock enable
+    	AFIO_PCLK_EN();
+    	// Read the current value from the EXTICR register
+    	Temp_u32 = AFIO->EXTICR[Position_u32 >> 2u];
+    	// Calculate bitmask for the specific EXTI line in the EXTICR register
+    	Bitmask_u32 = 0x0Fu << (4u * (Position_u32 & 0x03u));
+    	// Clear the bits corresponding to the EXTI line
+    	Temp_u32 &= ~Bitmask_u32;
+    	// Set the bits with the index of the GPIO port
+    	Temp_u32 |= (GPIO_GET_INDEX(GPIO_Handle_p->GPIOx_p) << (4u * (Position_u32 & 0x03u)));
+    	// Write the updated value back to the EXTICR register
+    	AFIO->EXTICR[Position_u32 >> 2u] = Temp_u32;
+    }
+
+>>>>>>> Stashed changes
 } /* END of GPIO_Init */
 
 

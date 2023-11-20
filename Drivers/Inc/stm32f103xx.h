@@ -71,6 +71,7 @@
 #define GPIOD_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1400)
 #define GPIOE_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1800)
 #define EXTI_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x0400)
+#define AFIO_BASE_ADDR						 (APB2_PERIPH_BASE_ADDR + 0x0000)
 #define SPI1_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x3000)
 #define USART1_BASE_ADDR                     (APB2_PERIPH_BASE_ADDR + 0x3800)
 #define TIM1_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x2C00)
@@ -112,10 +113,7 @@ typedef struct {
 typedef struct {
   volatile uint32_t EVCR;    /*Event control register ,Address offset : 0x00*/
   volatile uint32_t MAPR;    /*AF remap and debug I/O configuration register,Address offset : 0x04*/
-  volatile uint32_t EXTICR1; /*External interrupt configuration register 1,Address offset : 0x08*/
-  volatile uint32_t EXTICR2; /*External interrupt configuration register 2,Address offset : 0x0C*/
-  volatile uint32_t EXTICR3; /*External interrupt configuration register 3,Address offset : 0x10*/
-  volatile uint32_t EXTICR4; /*External interrupt configuration register 4,Address offset : 0x14*/
+  volatile uint32_t EXTICR[4]; /*External interrupt configuration register,Address offset : 0x08*/
   uint32_t RESERVED;         /*Reserved ,Address offset : 0x18*/
   volatile uint32_t MAPR2;   /*AF remap and debug I/O configuration register2,Address offset : 0x1C*/
 } AFIO_RegDef_s;
@@ -135,7 +133,14 @@ typedef struct {
 } RCC_RegDef_t;
 
 // EXTI Register def structure
-
+typedef struct {
+	volatile uint32_t IMR; /* Interrupt mask register , Address offset : 0x00 */
+	volatile uint32_t EMR; /* Event mask register , Address offset : 0x04 */
+	volatile uint32_t RTSR; /* Rising trigger selection register , Address offset : 0x08 */
+	volatile uint32_t FTSR; /* Falling trigger selection register , Address offset : 0x0C */
+	volatile uint32_t SWIER; /* Software interrupt event register , Address offset : 0x10 */
+	volatile uint32_t PR; /* Pending register , Address offset : 0x14 */
+} EXTIRegDef_t;
 
 
 /* GPIO Peripheral defines */
@@ -148,6 +153,12 @@ typedef struct {
 
 #define RCC                                  ((RCC_RegDef_t *)RCC_BASE_ADDR)
 #define EXTI                                 ((RCC_RegDef_t *)EXTI_BASE_ADDR)
+#define AFIO                                 ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
+
+#define GPIO_GET_INDEX(__GPIOx__) (((__GPIOx__) == (GPIOA))? 0uL :\
+                                   ((__GPIOx__) == (GPIOB))? 1uL :\
+                                   ((__GPIOx__) == (GPIOC))? 2uL :\
+                                   ((__GPIOx__) == (GPIOD))? 3uL :4uL)
 
 /*
     Clock enable macros for GPIO, AFIO
