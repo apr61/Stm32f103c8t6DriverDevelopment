@@ -86,7 +86,7 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 {
     uint8_t Mode_CNF = 0x0U; // Store MODEx and CNFx value for each pin (x = 0,1,2,.....15)
     uint8_t PinNumber = GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber;
-    uint8_t bitFieldOffSet;
+    uint32_t bitFieldOffSet;
 
     // MODEx [1:0] && CNFx [1:0] Configurations
     switch(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode)
@@ -169,7 +169,7 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 
         /* Edge detection for Interrupt */
         /* Falling edge trigger */
-        if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_INT_FALLING_TRI)
+        if((GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode & GPIO_MODE_INT_FALLING_TRI) == GPIO_MODE_INT_FALLING_TRI)
         {
             EXTI->FTSR |= (1 << PinNumber);
         }
@@ -178,8 +178,8 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             EXTI->FTSR &= ~(1 << PinNumber);
         }
 
-        /* Raisng edge trigger */
-        if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_INT_RAISING_TRI)
+        /* Raising edge trigger */
+        if((GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode & GPIO_MODE_INT_RAISING_TRI)== GPIO_MODE_INT_RAISING_TRI)
         {
             EXTI->RTSR |= (1 << PinNumber);
         }
@@ -190,7 +190,7 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 
 
         /* Raising - Falling edge trigger */
-        if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_INT_RAISING_FALLING)
+        if((GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode & GPIO_MODE_INT_RAISING_FALLING) == GPIO_MODE_INT_RAISING_FALLING)
         {
             EXTI->RTSR |= (1 << PinNumber);
             EXTI->FTSR |= (1 << PinNumber);
@@ -332,11 +332,11 @@ void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8)
     {
         if(IRQ_Number_u8 <= 31 && IRQ_Number_u8 >= 0)
         {
-            *NVIC_ISER0 |= (uint32_t)(1 << IRQ_Number_u8);
+            *NVIC_ISER0 |= (1 << IRQ_Number_u8);
         }
         else /* IRQ Number 32 to 64 */
         {
-            *NVIC_ISER1 |= (uint32_t)(1 << (IRQ_Number_u8 % 32));
+            *NVIC_ISER1 |= (1 << (IRQ_Number_u8 % 32));
         }
     }
     else

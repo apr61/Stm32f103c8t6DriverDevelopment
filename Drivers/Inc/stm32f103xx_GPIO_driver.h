@@ -61,7 +61,7 @@ typedef struct {
 #define FALLING_EDGE          			   0x00200000u
 
 /* General Purpose input mode */
-#define GPIO_MODE_INPUT                       1
+#define GPIO_MODE_INPUT                    1
 #define GPIO_MODE_ANALOG                   2
 
 /* General Purpose output mode */

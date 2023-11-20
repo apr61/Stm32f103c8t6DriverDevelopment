@@ -32,6 +32,9 @@
                                             ((__gpio_address__) == (GPIOC))? 2uL :\
                                             ((__gpio_address__) == (GPIOD))? 3uL :4uL)
 
+#define SET_BIT(REG, BIT)     ((REG) |= (BIT))
+
+#define CLEAR_BIT(REG, BIT)   ((REG) &= ~(BIT))
 
 /* Arm Cortex Mx NVIC ISERx register - Set */
 #define NVIC_ISER0                         ((volatile uint32_t *) 0xE000E100)  /* 0 - 31 IRQs */
@@ -141,7 +144,7 @@ typedef struct {
 	volatile uint32_t FTSR; /* Falling trigger selection register , Address offset : 0x0C */
 	volatile uint32_t SWIER; /* Software interrupt event register , Address offset : 0x10 */
 	volatile uint32_t PR; /* Pending register , Address offset : 0x14 */
-} EXTIRegDef_t;
+} EXTI_RegDef_t;
 
 
 /* GPIO Peripheral defines */
@@ -153,7 +156,7 @@ typedef struct {
 #define GPIOE                                ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
 
 #define RCC                                  ((RCC_RegDef_t *)RCC_BASE_ADDR)
-#define EXTI                                 ((EXTIRegDef_t *)EXTI_BASE_ADDR)
+#define EXTI                                 ((EXTI_RegDef_t *)EXTI_BASE_ADDR)
 #define AFIO                                 ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
 
 
