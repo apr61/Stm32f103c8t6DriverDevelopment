@@ -46,7 +46,7 @@ int main(void)
 
     while(1)
     {
-        if(GPIO_ReadInputPin(GPIOB, GPIO_PIN_0) == GPIO_SET_PIN)
+        if(GPIO_ReadInputPin(GPIOB, GPIO_PIN_0) == GPIO_RESET_PIN)
         {
             delay();    
             GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
@@ -54,7 +54,7 @@ int main(void)
         else
         {
         	delay();
-        	GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
+        	GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_RESET_PIN);
         }
     }
 }
