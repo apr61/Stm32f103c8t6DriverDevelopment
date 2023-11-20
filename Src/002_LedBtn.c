@@ -33,22 +33,28 @@ int main(void)
     GPIO_Led.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
     GPIO_Led.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
 
-    GPIO_Btn.GPIOx_p = GPIOA;
-    GPIO_Btn.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_12;
+    GPIO_Btn.GPIOx_p = GPIOB;
+    GPIO_Btn.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_0;
     GPIO_Btn.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_INPUT;
     GPIO_Btn.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
     GPIO_Btn.GPIO_PinConfig.GPIOPinPull = GPIO_PULL_UP;
 
+    GPIO_PCLK_Control(GPIOB, ENABLE);
     GPIO_PCLK_Control(GPIOA, ENABLE);
     GPIO_Init(&GPIO_Led);
     GPIO_Init(&GPIO_Btn);
 
     while(1)
     {
-        if(GPIO_ReadInputPin(GPIOA, GPIO_PIN_12) == GPIO_SET_PIN)
+        if(GPIO_ReadInputPin(GPIOB, GPIO_PIN_0) == GPIO_SET_PIN)
         {
             delay();    
             GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
+        }
+        else
+        {
+        	delay();
+        	GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
         }
     }
 }

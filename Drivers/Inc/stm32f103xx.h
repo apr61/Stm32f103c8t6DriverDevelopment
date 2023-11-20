@@ -27,10 +27,11 @@
 
 #include <stdint.h>
 
-#define GPIO_GET_INDEX(__gpio_address__)    __gpio_address__ == GPIOA ? 0 : \ 
-                                            __gpio_address__ == GPIOB ? 1 : \
-                                            __gpio_address__ == GPIOC ? 2 : \
-                                            __gpio_address__ == GPIOD ? 3 : 4
+#define GPIO_GET_INDEX(__gpio_address__)   (((__gpio_address__) == (GPIOA))? 0uL :\
+                                            ((__gpio_address__) == (GPIOB))? 1uL :\
+                                            ((__gpio_address__) == (GPIOC))? 2uL :\
+                                            ((__gpio_address__) == (GPIOD))? 3uL :4uL)
+
 
 /* Arm Cortex Mx NVIC ISERx register - Set */
 #define NVIC_ISER0                         ((volatile uint32_t *) 0xE000E100)  /* 0 - 31 IRQs */
@@ -152,13 +153,10 @@ typedef struct {
 #define GPIOE                                ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
 
 #define RCC                                  ((RCC_RegDef_t *)RCC_BASE_ADDR)
-#define EXTI                                 ((RCC_RegDef_t *)EXTI_BASE_ADDR)
+#define EXTI                                 ((EXTIRegDef_t *)EXTI_BASE_ADDR)
 #define AFIO                                 ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
 
-#define GPIO_GET_INDEX(__GPIOx__) (((__GPIOx__) == (GPIOA))? 0uL :\
-                                   ((__GPIOx__) == (GPIOB))? 1uL :\
-                                   ((__GPIOx__) == (GPIOC))? 2uL :\
-                                   ((__GPIOx__) == (GPIOD))? 3uL :4uL)
+
 
 /*
     Clock enable macros for GPIO, AFIO

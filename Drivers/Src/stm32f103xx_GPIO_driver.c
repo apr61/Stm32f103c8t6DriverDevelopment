@@ -85,16 +85,11 @@ void GPIO_PCLK_Control(GPIO_RegDef_s * GPIOx_p, uint8_t EnOrDi_u8)
 void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
 {
     uint8_t Mode_CNF = 0x0U; // Store MODEx and CNFx value for each pin (x = 0,1,2,.....15)
-<<<<<<< Updated upstream
-    uint8_t PinNumber = GPIO_Handle_p->GPIO_PinConfig.PinNumber;
+    uint8_t PinNumber = GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber;
     uint8_t bitFieldOffSet;
-=======
-    uint32_t Temp_u32;
-    uint32_t Bitmask_u32;
-    uint32_t Position_u32 = GPIO_Handle_p->GPIO_PinConfig.GPIOPinNumber;
->>>>>>> Stashed changes
+
     // MODEx [1:0] && CNFx [1:0] Configurations
-    switch(GPIO_Handle_p->GPIO_PinConfig.PinMode)
+    switch(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode)
     {
         // GPIO output mode PUSH PULL
         case GPIO_MODE_OUT_PUSH_PULL:
@@ -113,7 +108,7 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
             break;
         // GPIO Input mode
-        case GPIO_MODE_IN:
+        case GPIO_MODE_INPUT:
         case GPIO_MODE_INT_FALLING_TRI:
         case GPIO_MODE_INT_RAISING_TRI:
         case GPIO_MODE_INT_RAISING_FALLING:
@@ -125,14 +120,12 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_UP) // GPIO input PULL UP
             {
                 Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+                GPIO_Handle_p->GPIOx_p->BSRR |= (1<<PinNumber);
             }
-            else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_DOWN) // GPIO input PULL DOWN
+            else // GPIO input PULL DOWN
             {
                 Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
-            }
-            else // GPIO input PULL UP/DOWN
-            {
-                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+                GPIO_Handle_p->GPIOx_p->BRR |= (1<<PinNumber);
             }
             break;
         // GPIO INPUT analog
@@ -154,79 +147,64 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     	GPIO_Handle_p->GPIOx_p->CRH |= (Mode_CNF << (PinNumber * 4));
     }
 
-    /* EXTI Configuration */
 
-    /* Enable AFIO Clock */
-    AFIO_PCLK_EN();
-
-    /* Enable EXTICR register for given pin */
-    // Here divison is used to get the EXTICR register out of 4 register
-    // Modulo is used to get the bit field offSet
-    // GPIO_GET_INDEX macro gives the index of GPIO port
-    /*
-        Example: PinNumber = 12
-        PinNumber / 4 = 3 (3rd EXTICR register)
-        PinNumber % 4 = 0 (0th bit field)
-    */
-    bitFieldOffSet = (PinNumber % 4) * 4; // Range in register that is 0,4,8,12
-    AFIO->EXTICR[PinNumber / 4] &= ~(0xF << bitFiledOffSet);  // Clearing the current register Bitfield offset
-    AFIO->EXTICR[PinNumber / 4] |= (GPIO_GET_INDEX(GPIO_Handle_p->GPIOx_p) << bitFiledOffSet);  // Setting the current register Bitfield offset with required port
-    
-    /* Edge detection for Interrupt */
-    /* Falling edge trigger */
-    if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_IT_FALLING_TRI)
-    {
-        EXTI->FTSR |= (1 << PinNumber);
-    }
-    else
-    {
-        EXTI->FTSR &= ~(1 << PinNumber);
-    }
-
-    /* Raisng edge trigger */
-    if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_IT_RAISING_TRI)
-    {
-        EXTI->RTSR |= (1 << PinNumber);
-    }
-    else
-    {
-        EXTI->RTSR &= ~(1 << PinNumber);
-    }
-
-<<<<<<< Updated upstream
-    /* Raising - Falling edge trigger */
-    if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_IT_RAISING_FALLING_TRI)
-    {
-        EXTI->RTSR |= (1 << PinNumber);
-        EXTI->FTSR |= (1 << PinNumber);
-    }
-    else
-    {
-        EXTI->RTSR &= ~(1 << PinNumber);
-        EXTI->FTSR &= ~(1 << PinNumber);
-    }
-    
-    /* Configure IMR for EXTI interrupt delivery */
-    EXTI->IMR |= (1 << PinNumber);
-=======
     /*--------------------- EXTI Mode Configuration ------------------------*/
     if((GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode & EXTI_MODE) == EXTI_MODE)
     {
-    	// Alternate functioning clock enable
-    	AFIO_PCLK_EN();
-    	// Read the current value from the EXTICR register
-    	Temp_u32 = AFIO->EXTICR[Position_u32 >> 2u];
-    	// Calculate bitmask for the specific EXTI line in the EXTICR register
-    	Bitmask_u32 = 0x0Fu << (4u * (Position_u32 & 0x03u));
-    	// Clear the bits corresponding to the EXTI line
-    	Temp_u32 &= ~Bitmask_u32;
-    	// Set the bits with the index of the GPIO port
-    	Temp_u32 |= (GPIO_GET_INDEX(GPIO_Handle_p->GPIOx_p) << (4u * (Position_u32 & 0x03u)));
-    	// Write the updated value back to the EXTICR register
-    	AFIO->EXTICR[Position_u32 >> 2u] = Temp_u32;
+        /* Enable AFIO Clock */
+        AFIO_PCLK_EN();
+
+        /* Enable EXTICR register for given pin */
+        // Here divison is used to get the EXTICR register out of 4 register
+        // Modulo is used to get the bit field offSet
+        // GPIO_GET_INDEX macro gives the index of GPIO port
+        /*
+            Example: PinNumber = 12
+            PinNumber / 4 = 3 (3rd EXTICR register)
+            PinNumber % 4 = 0 (0th bit field)
+        */
+        bitFieldOffSet = (PinNumber % 4) * 4; // Range in register that is 0,4,8,12
+        AFIO->EXTICR[PinNumber / 4] &= ~(0xF << bitFieldOffSet);  // Clearing the current register Bitfield offset
+        AFIO->EXTICR[PinNumber / 4] |= (GPIO_GET_INDEX(GPIO_Handle_p->GPIOx_p) << bitFieldOffSet);  // Setting the current register Bitfield offset with required port
+
+        /* Edge detection for Interrupt */
+        /* Falling edge trigger */
+        if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_INT_FALLING_TRI)
+        {
+            EXTI->FTSR |= (1 << PinNumber);
+        }
+        else
+        {
+            EXTI->FTSR &= ~(1 << PinNumber);
+        }
+
+        /* Raisng edge trigger */
+        if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_INT_RAISING_TRI)
+        {
+            EXTI->RTSR |= (1 << PinNumber);
+        }
+        else
+        {
+            EXTI->RTSR &= ~(1 << PinNumber);
+        }
+
+
+        /* Raising - Falling edge trigger */
+        if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode == GPIO_MODE_INT_RAISING_FALLING)
+        {
+            EXTI->RTSR |= (1 << PinNumber);
+            EXTI->FTSR |= (1 << PinNumber);
+        }
+        else
+        {
+            EXTI->RTSR &= ~(1 << PinNumber);
+            EXTI->FTSR &= ~(1 << PinNumber);
+        }
+
+        /* Configure IMR for EXTI interrupt delivery */
+        EXTI->IMR |= (1 << PinNumber);
     }
 
->>>>>>> Stashed changes
 } /* END of GPIO_Init */
 
 
@@ -274,7 +252,7 @@ void GPIO_DeInit(GPIO_RegDef_s * GPIOx_p)
 uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8)
 {
     uint8_t TempValue_u8 = 0;
-    TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x00000001); 
+    TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x1);
     return TempValue_u8;
 }/* END of GPIO_ReadInputPin */
 
@@ -401,7 +379,7 @@ void GPIO_IRQ_Priority(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8)
 void GPIO_IRQ_Handling(uint8_t PinNumber_u8)
 {
     // Clear the EXTI PR register corresponding to the pin number
-    if(EXTI->PR & (1 << PinNumber_u8) == SET)
+    if((EXTI->PR & (1 << PinNumber_u8)) == SET)
     {
         // Clear the bit by setting it to 1
         EXTI->PR |= (uint32_t)(1 << PinNumber_u8);
