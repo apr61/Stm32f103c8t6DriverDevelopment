@@ -27,6 +27,23 @@
 
 #include <stdint.h>
 
+#define GPIO_GET_INDEX(__gpio_address__)    __gpio_address__ == GPIOA ? 0 : \ 
+                                            __gpio_address__ == GPIOB ? 1 : \
+                                            __gpio_address__ == GPIOC ? 2 : \
+                                            __gpio_address__ == GPIOD ? 3 : 4
+
+/* Arm Cortex Mx NVIC ISERx register - Set */
+#define NVIC_ISER0                         ((volatile uint32_t *) 0xE000E100)  /* 0 - 31 IRQs */
+#define NVIC_ISER1                         ((volatile uint32_t *) 0xE000E104)  /* 32 - 63 IRQs */
+
+/* Arm Cortex Mx NVIC ICERx register - Clear*/
+#define NVIC_ICER0                         ((volatile uint32_t *) 0xE000E180)  /* 0 - 31 IRQs */
+#define NVIC_ICER1                         ((volatile uint32_t *) 0xE000E184)  /* 32 - 63 IRQs */
+
+/* Arm Cortex Mx NVIC Priporty register */
+#define NVIC_PR_BASE_ADDR                  ((volatile uint32_t *) 0xE000E400)
+#define NUM_PR_BITS_IMPLEMENTED            4
+
 /*
     Flash and SRAM base addresses
 */
@@ -206,6 +223,18 @@ typedef struct {
 #define USART1_PCLK_DI()                     (RCC->APB2ENR &= ~(1 << 14))
 #define USART2_PCLK_DI()                     (RCC->APB1ENR &= ~(1 << 17))
 #define USART3_PCLK_DI()                     (RCC->APB1ENR &= ~(1 << 18))
+
+
+/*
+    IRQ (Interrupt request) Numbers
+*/
+#define IRQ_NO_EXTI0                        6
+#define IRQ_NO_EXTI1                        7
+#define IRQ_NO_EXTI2                        8
+#define IRQ_NO_EXTI3                        9
+#define IRQ_NO_EXTI4                        10
+#define IRQ_NO_EXTI9_5                      23
+#define IRQ_NO_EXTI15_10                    40
 
 
 // Some general macros

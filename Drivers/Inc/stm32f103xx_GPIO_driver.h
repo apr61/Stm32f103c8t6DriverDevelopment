@@ -114,7 +114,8 @@ void GPIO_WriteOutputPort(GPIO_RegDef_s * GPIOx_p, uint16_t Value_u16);
 void GPIO_TogglePin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8);
 
 /* GPIO interrupt Configuration and handling */
-void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8, uint8_t EnOrDi_u8);
+void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8);
+void GPIO_IRQ_Priority(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8);
 void GPIO_IRQ_Handling(uint8_t PinNumber_u8);
 
 #endif /* STM32F103XX_GPIO_DRIVER_H_ */
