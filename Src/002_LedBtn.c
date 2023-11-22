@@ -41,6 +41,7 @@ int main(void)
 
     GPIO_PCLK_Control(GPIOB, ENABLE);
     GPIO_PCLK_Control(GPIOA, ENABLE);
+    GPIO_PCLK_Control(GPIOB, ENABLE);
     GPIO_Init(&GPIO_Led);
     GPIO_Init(&GPIO_Btn);
 
