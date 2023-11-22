@@ -20,10 +20,10 @@
 
 // GPIO configuration
 typedef struct {
-  uint8_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
+  uint32_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
   uint32_t GPIOPinMode;  /* Refer to @GPIO_PIN_MODES */
-  uint8_t GPIOPinSpeed; /* Refer to @GPIO_SPEED */
-  uint8_t GPIOPinPull; /* Refer to @GPIO_Pull_up_down */
+  uint32_t GPIOPinSpeed; /* Refer to @GPIO_SPEED */
+  uint32_t GPIOPinPull; /* Refer to @GPIO_Pull_up_down */
 } GPIO_PinConfig_s;
 
 // GPIO Handle
@@ -33,22 +33,22 @@ typedef struct {
 } GPIO_Handle_s;
 
 /* @GPIO_PIN_NUMBERS */
-#define GPIO_PIN_0                           0
-#define GPIO_PIN_1                           1
-#define GPIO_PIN_2                           2
-#define GPIO_PIN_3                           3
-#define GPIO_PIN_4                           4
-#define GPIO_PIN_5                           5
-#define GPIO_PIN_6                           6
-#define GPIO_PIN_7                           7
-#define GPIO_PIN_8                           8
-#define GPIO_PIN_9                           9
-#define GPIO_PIN_10                          10
-#define GPIO_PIN_11                          11
-#define GPIO_PIN_12                          12
-#define GPIO_PIN_13                          13
-#define GPIO_PIN_14                          14
-#define GPIO_PIN_15                          15
+#define GPIO_PIN_0                           0u
+#define GPIO_PIN_1                           1u
+#define GPIO_PIN_2                           2u
+#define GPIO_PIN_3                           3u
+#define GPIO_PIN_4                           4u
+#define GPIO_PIN_5                           5u
+#define GPIO_PIN_6                           6u
+#define GPIO_PIN_7                           7u
+#define GPIO_PIN_8                           8u
+#define GPIO_PIN_9                           9u
+#define GPIO_PIN_10                          10u
+#define GPIO_PIN_11                          11u
+#define GPIO_PIN_12                          12u
+#define GPIO_PIN_13                          13u
+#define GPIO_PIN_14                          14u
+#define GPIO_PIN_15                          15u
 
 /*
     @GPIO_PIN_MODES
@@ -61,16 +61,16 @@ typedef struct {
 #define FALLING_EDGE          			   0x00200000u
 
 /* General Purpose input mode */
-#define GPIO_MODE_INPUT                    1
-#define GPIO_MODE_ANALOG                   2
+#define GPIO_MODE_INPUT                    1u
+#define GPIO_MODE_ANALOG                   2u
 
 /* General Purpose output mode */
-#define GPIO_MODE_OUT_PUSH_PULL            3
-#define GPIO_MODE_OUT_OD                   4
+#define GPIO_MODE_OUT_PUSH_PULL            3u
+#define GPIO_MODE_OUT_OD                   4u
 
 /* Alternate functionality mode for Output */
-#define GPIO_MODE_ALT_PUSH_PULL            5
-#define GPIO_MODE_ALT_OD                   6 /* Open Drain */
+#define GPIO_MODE_ALT_PUSH_PULL            5u
+#define GPIO_MODE_ALT_OD                   6u /* Open Drain */
 
 /* GPIO External interrupt - Event */
 #define GPIO_MODE_INT_FALLING_TRI                   0x10110000u /* External Interrupt Falling Edge */
@@ -99,14 +99,14 @@ typedef struct {
  *	Bit manipulations for GPIO CRL and CRH registers
  * */
 
-#define GPIO_CR_MODE_IN                          0 /* 00: GPIO MODE INPUT */
-#define GPIO_CR_CNF_IN_ANALOG                    0 /* 00: Analog mode */
-#define GPIO_CR_CNF_IN_FLOATING                  1 /* 01: Floating input (reset state) */
-#define GPIO_CR_CNF_IN_PU_UP_DOWN                2 /* 10: Input with pull-up / pull-down */
-#define GPIO_CR_CNF_OUT_GP_PS_PL                 0 /* 00: General purpose output push-pull */
-#define GPIO_CR_CNF_OUT_GP_OPEN_DR               1 /* 01: General purpose output Open-drain */
-#define GPIO_CR_CNF_OUT_ALT_FUN_PS_PL            2 /* 10: Alternate function output Push-pull */
-#define GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR          3 /* 11: Alternate function output Open-drain */
+#define GPIO_CR_MODE_IN                          0u /* 00: GPIO MODE INPUT */
+#define GPIO_CR_CNF_IN_ANALOG                    0u /* 00: Analog mode */
+#define GPIO_CR_CNF_IN_FLOATING                  1u /* 01: Floating input (reset state) */
+#define GPIO_CR_CNF_IN_PU_UP_DOWN                2u /* 10: Input with pull-up / pull-down */
+#define GPIO_CR_CNF_OUT_GP_PS_PL                 0u /* 00: General purpose output push-pull */
+#define GPIO_CR_CNF_OUT_GP_OPEN_DR               1u /* 01: General purpose output Open-drain */
+#define GPIO_CR_CNF_OUT_ALT_FUN_PS_PL            2u /* 10: Alternate function output Push-pull */
+#define GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR          3u /* 11: Alternate function output Open-drain */
 
 /* GPIO API's */
 

@@ -93,19 +93,19 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     {
         // GPIO output mode PUSH PULL
         case GPIO_MODE_OUT_PUSH_PULL:
-            Mode_CNF = ((GPIO_CR_CNF_OUT_GP_PS_PL << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            Mode_CNF = ((GPIO_CR_CNF_OUT_GP_PS_PL << 2u) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
             break;
         // GPIO output mode Open Drain
         case GPIO_MODE_OUT_OD:
-            Mode_CNF = ((GPIO_CR_CNF_OUT_GP_OPEN_DR << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            Mode_CNF = ((GPIO_CR_CNF_OUT_GP_OPEN_DR << 2u) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
             break;
         // Alternate functionality PUSH PULL
         case GPIO_MODE_ALT_PUSH_PULL:
-            Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_PS_PL << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_PS_PL << 2u) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
             break;
         // Alternate functionality open drain
         case GPIO_MODE_ALT_OD:
-            Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR << 2) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
+            Mode_CNF = ((GPIO_CR_CNF_OUT_ALT_FUN_OPEN_DR << 2u) | GPIO_Handle_p->GPIO_PinConfig.GPIOPinSpeed);
             break;
         // GPIO Input mode
         case GPIO_MODE_INPUT:
@@ -115,22 +115,22 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             // GPIO pull Floating
             if(GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_NO_PULL)
             {
-                Mode_CNF = ((GPIO_CR_CNF_IN_FLOATING << 2) | GPIO_CR_MODE_IN);
+                Mode_CNF = ((GPIO_CR_CNF_IN_FLOATING << 2u) | GPIO_CR_MODE_IN);
             } 
             else if (GPIO_Handle_p->GPIO_PinConfig.GPIOPinPull == GPIO_PULL_UP) // GPIO input PULL UP
             {
-                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2u) | GPIO_CR_MODE_IN);
                 GPIO_Handle_p->GPIOx_p->BSRR |= (1<<PinNumber);
             }
             else // GPIO input PULL DOWN
             {
-                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2) | GPIO_CR_MODE_IN);
+                Mode_CNF = ((GPIO_CR_CNF_IN_PU_UP_DOWN << 2u) | GPIO_CR_MODE_IN);
                 GPIO_Handle_p->GPIOx_p->BRR |= (1<<PinNumber);
             }
             break;
         // GPIO INPUT analog
         case GPIO_MODE_ANALOG:
-            Mode_CNF = ((GPIO_CR_CNF_IN_ANALOG << 2) | GPIO_CR_MODE_IN);
+            Mode_CNF = ((GPIO_CR_CNF_IN_ANALOG << 2u) | GPIO_CR_MODE_IN);
             break;
         default:
             break;
@@ -138,13 +138,13 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
     /* Check for First half bits (0 - 7) */
     if(PinNumber <= 7)
     {
-    	GPIO_Handle_p->GPIOx_p->CRL &= ~(0xF << (PinNumber * 4));
-    	GPIO_Handle_p->GPIOx_p->CRL |= (Mode_CNF << (PinNumber * 4));
+    	GPIO_Handle_p->GPIOx_p->CRL &= ~(0xFu << (PinNumber * 4u));
+    	GPIO_Handle_p->GPIOx_p->CRL |= (Mode_CNF << (PinNumber * 4u));
     }
     else     /* Check for Second half bits (8 - 15) */
     {
-    	GPIO_Handle_p->GPIOx_p->CRH &= ~(0xF << (PinNumber * 4));
-    	GPIO_Handle_p->GPIOx_p->CRH |= (Mode_CNF << (PinNumber * 4));
+    	GPIO_Handle_p->GPIOx_p->CRH &= ~(0xFu << (PinNumber * 4u));
+    	GPIO_Handle_p->GPIOx_p->CRH |= (Mode_CNF << (PinNumber * 4u));
     }
 
 
@@ -163,9 +163,9 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             PinNumber / 4 = 3 (3rd EXTICR register)
             PinNumber % 4 = 0 (0th bit field)
         */
-        bitFieldOffSet = (PinNumber % 4) * 4; // Range in register that is 0,4,8,12
-        AFIO->EXTICR[PinNumber / 4] &= ~(0xF << bitFieldOffSet);  // Clearing the current register Bitfield offset
-        AFIO->EXTICR[PinNumber / 4] |= (GPIO_GET_INDEX(GPIO_Handle_p->GPIOx_p) << bitFieldOffSet);  // Setting the current register Bitfield offset with required port
+        bitFieldOffSet = (PinNumber % 4u) * 4u; // Range in register that is 0,4,8,12
+        AFIO->EXTICR[PinNumber / 4u] &= ~(0xFu << bitFieldOffSet);  // Clearing the current register Bitfield offset
+        AFIO->EXTICR[PinNumber / 4u] |= (GPIO_GET_INDEX(GPIO_Handle_p->GPIOx_p) << bitFieldOffSet);  // Setting the current register Bitfield offset with required port
 
         /* Edge detection for Interrupt */
         /* Falling edge trigger */
@@ -251,8 +251,8 @@ void GPIO_DeInit(GPIO_RegDef_s * GPIOx_p)
 */
 uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8)
 {
-    uint8_t TempValue_u8 = 0;
-    TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x1);
+    uint8_t TempValue_u8 = 0u;
+    TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x1u);
     return TempValue_u8;
 }/* END of GPIO_ReadInputPin */
 
@@ -265,7 +265,7 @@ uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8)
 */
 uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p)
 {
-    uint16_t TempValue_u16 = 0;
+    uint16_t TempValue_u16 = 0u;
     TempValue_u16 = (uint16_t)(GPIOx_p->IDR); 
     return TempValue_u16;
 }/* END of GPIO_ReadInputPort */
@@ -330,24 +330,24 @@ void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8)
 {
     if(EnOrDi_u8 == ENABLE)
     {
-        if(IRQ_Number_u8 <= 31 && IRQ_Number_u8 >= 0)
+        if(IRQ_Number_u8 <= 31u)
         {
             *NVIC_ISER0 |= (1 << IRQ_Number_u8);
         }
         else /* IRQ Number 32 to 64 */
         {
-            *NVIC_ISER1 |= (1 << (IRQ_Number_u8 % 32));
+            *NVIC_ISER1 |= (1 << (IRQ_Number_u8 % 32u));
         }
     }
     else
     {
-        if(IRQ_Number_u8 <= 31 && IRQ_Number_u8 >= 0)
+        if(IRQ_Number_u8 <= 31u)
         {
             *NVIC_ICER0 |= (uint32_t)(1 << IRQ_Number_u8);
         }
         else /* IRQ Number 32 to 64 */
         {
-            *NVIC_ICER1 |= (uint32_t)(1 << (IRQ_Number_u8 % 32));
+            *NVIC_ICER1 |= (uint32_t)(1 << (IRQ_Number_u8 % 32u));
         }
     }
 }/* END of GPIO_IRQ_Config */
@@ -362,9 +362,9 @@ void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8)
 */
 void GPIO_IRQ_Priority(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8)
 {
-    uint8_t IPRx_u8 = IRQ_Number_u8 / 4; // Get the required IPR register number
-    uint8_t IPRx_Section_u8 = IRQ_Number_u8 % 4; // Get the required IPR register number
-    uint8_t ShiftAmount_u8 = (IPRx_Section_u8 * 8) + (8 - NUM_PR_BITS_IMPLEMENTED); // Last 4 bits are not implemented
+    uint8_t IPRx_u8 = IRQ_Number_u8 / 4u; // Get the required IPR register number
+    uint8_t IPRx_Section_u8 = IRQ_Number_u8 % 4u; // Get the required IPR register number
+    uint8_t ShiftAmount_u8 = (IPRx_Section_u8 * 8u) + (8u - NUM_PR_BITS_IMPLEMENTED); // Last 4 bits are not implemented
 
     *(NVIC_PR_BASE_ADDR + IPRx_u8) |= (uint32_t)(IRQ_Priority_u8 << ShiftAmount_u8);
 }/* END of GPIO_IRQ_Priority */

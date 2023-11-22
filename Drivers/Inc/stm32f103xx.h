@@ -27,26 +27,23 @@
 
 #include <stdint.h>
 
-#define GPIO_GET_INDEX(__gpio_address__)   (((__gpio_address__) == (GPIOA))? 0uL :\
-                                            ((__gpio_address__) == (GPIOB))? 1uL :\
-                                            ((__gpio_address__) == (GPIOC))? 2uL :\
-                                            ((__gpio_address__) == (GPIOD))? 3uL :4uL)
+#define GPIO_GET_INDEX(__gpio_address__)   (((__gpio_address__) == (GPIOA))? 0u :\
+                                            ((__gpio_address__) == (GPIOB))? 1u :\
+                                            ((__gpio_address__) == (GPIOC))? 2u :\
+                                            ((__gpio_address__) == (GPIOD))? 3u :4u)
 
-#define SET_BIT(REG, BIT)     ((REG) |= (BIT))
-
-#define CLEAR_BIT(REG, BIT)   ((REG) &= ~(BIT))
 
 /* Arm Cortex Mx NVIC ISERx register - Set */
-#define NVIC_ISER0                         ((volatile uint32_t *) 0xE000E100)  /* 0 - 31 IRQs */
-#define NVIC_ISER1                         ((volatile uint32_t *) 0xE000E104)  /* 32 - 63 IRQs */
+#define NVIC_ISER0                         ((volatile uint32_t *) 0xE000E100u)  /* 0 - 31 IRQs */
+#define NVIC_ISER1                         ((volatile uint32_t *) 0xE000E104u)  /* 32 - 63 IRQs */
 
 /* Arm Cortex Mx NVIC ICERx register - Clear*/
-#define NVIC_ICER0                         ((volatile uint32_t *) 0xE000E180)  /* 0 - 31 IRQs */
-#define NVIC_ICER1                         ((volatile uint32_t *) 0xE000E184)  /* 32 - 63 IRQs */
+#define NVIC_ICER0                         ((volatile uint32_t *) 0xE000E180u)  /* 0 - 31 IRQs */
+#define NVIC_ICER1                         ((volatile uint32_t *) 0xE000E184u)  /* 32 - 63 IRQs */
 
 /* Arm Cortex Mx NVIC Priporty register */
-#define NVIC_PR_BASE_ADDR                  ((volatile uint32_t *) 0xE000E400)
-#define NUM_PR_BITS_IMPLEMENTED            4
+#define NVIC_PR_BASE_ADDR                  ((volatile uint32_t *) 0xE000E400u)
+#define NUM_PR_BITS_IMPLEMENTED            4u
 
 /*
     Flash and SRAM base addresses
@@ -69,36 +66,36 @@
     BASE address of peripherals which are hanging to APB2
 */
 
-#define GPIOA_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x00000800UL) //0x00000800UL
-#define GPIOB_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0C00)
-#define GPIOC_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1000)
-#define GPIOD_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1400)
-#define GPIOE_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1800)
-#define EXTI_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x0400)
-#define AFIO_BASE_ADDR						 (APB2_PERIPH_BASE_ADDR + 0x0000)
-#define SPI1_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x3000)
-#define USART1_BASE_ADDR                     (APB2_PERIPH_BASE_ADDR + 0x3800)
-#define TIM1_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x2C00)
+#define GPIOA_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0800U) //0x00000800UL
+#define GPIOB_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x0C00u)
+#define GPIOC_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1000u)
+#define GPIOD_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1400u)
+#define GPIOE_BASE_ADDR                      (APB2_PERIPH_BASE_ADDR + 0x1800u)
+#define EXTI_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x0400u)
+#define AFIO_BASE_ADDR						 (APB2_PERIPH_BASE_ADDR + 0x0000u)
+#define SPI1_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x3000u)
+#define USART1_BASE_ADDR                     (APB2_PERIPH_BASE_ADDR + 0x3800u)
+#define TIM1_BASE_ADDR                       (APB2_PERIPH_BASE_ADDR + 0x2C00u)
 
 /*
     BASE address of peripherals which are hanging to APB1
 */
 
-#define TIM2_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x0000)
-#define TIM3_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x0400)
-#define TIM4_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x0800)
-#define USART2_BASE_ADDR                     (APB1_PERIPH_BASE_ADDR + 0x4400)
-#define USART3_BASE_ADDR                     (APB1_PERIPH_BASE_ADDR + 0x4800)
-#define USART4_BASE_ADDR                     (APB1_PERIPH_BASE_ADDR + 0x4C00)
-#define SPI2_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x3800)
-#define I2C1_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x5400)
-#define I2C2_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x5800)
+#define TIM2_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x0000u)
+#define TIM3_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x0400u)
+#define TIM4_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x0800u)
+#define USART2_BASE_ADDR                     (APB1_PERIPH_BASE_ADDR + 0x4400u)
+#define USART3_BASE_ADDR                     (APB1_PERIPH_BASE_ADDR + 0x4800u)
+#define USART4_BASE_ADDR                     (APB1_PERIPH_BASE_ADDR + 0x4C00u)
+#define SPI2_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x3800u)
+#define I2C1_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x5400u)
+#define I2C2_BASE_ADDR                       (APB1_PERIPH_BASE_ADDR + 0x5800u)
 
 /*
     BASE address of peripherals which are hanging to AHB
 */
 
-#define RCC_BASE_ADDR                        (AHB_PERIPH_BASE_ADDR + 0x1000)
+#define RCC_BASE_ADDR                        (AHB_PERIPH_BASE_ADDR + 0x1000u)
 
 /* Peripheral register types */
 
@@ -160,98 +157,97 @@ typedef struct {
 #define AFIO                                 ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
 
 
-
 /*
     Clock enable macros for GPIO, AFIO
 */
 
-#define GPIOA_PCLK_EN()                      (RCC->APB2ENR |= (0x1UL << (2U)))
-#define GPIOB_PCLK_EN()                      (RCC->APB2ENR |= (1 << 3))
-#define GPIOC_PCLK_EN()                      (RCC->APB2ENR |= (1 << 4))
-#define GPIOD_PCLK_EN()                      (RCC->APB2ENR |= (1 << 5))
-#define GPIOE_PCLK_EN()                      (RCC->APB2ENR |= (1 << 6))
-#define AFIO_PCLK_EN()                       (RCC->APB2ENR |= (1 << 0))
+#define GPIOA_PCLK_EN()                      (RCC->APB2ENR |= (1u << 2u))
+#define GPIOB_PCLK_EN()                      (RCC->APB2ENR |= (1u << 3u))
+#define GPIOC_PCLK_EN()                      (RCC->APB2ENR |= (1u << 4u))
+#define GPIOD_PCLK_EN()                      (RCC->APB2ENR |= (1u << 5u))
+#define GPIOE_PCLK_EN()                      (RCC->APB2ENR |= (1u << 6u))
+#define AFIO_PCLK_EN()                       (RCC->APB2ENR |= (1u << 0u))
 
 /*
     Clock disable macros for GPIO
 */
 
-#define GPIOA_PCLK_DI()                      (RCC->APB2ENR &= ~(1 << 2))
-#define GPIOB_PCLK_DI()                      (RCC->APB2ENR &= ~(1 << 3))
-#define GPIOC_PCLK_DI()                      (RCC->APB2ENR &= ~(1 << 4))
-#define GPIOD_PCLK_DI()                      (RCC->APB2ENR &= ~(1 << 5))
-#define GPIOE_PCLK_DI()                      (RCC->APB2ENR &= ~(1 << 6))
-#define AFIO_PCLK_DI()                       (RCC->APB2ENR &= ~(1 << 0))
+#define GPIOA_PCLK_DI()                      (RCC->APB2ENR &= ~(1u << 2u))
+#define GPIOB_PCLK_DI()                      (RCC->APB2ENR &= ~(1u << 3u))
+#define GPIOC_PCLK_DI()                      (RCC->APB2ENR &= ~(1u << 4u))
+#define GPIOD_PCLK_DI()                      (RCC->APB2ENR &= ~(1u << 5u))
+#define GPIOE_PCLK_DI()                      (RCC->APB2ENR &= ~(1u << 6u))
+#define AFIO_PCLK_DI()                       (RCC->APB2ENR &= ~(1u << 0u))
 
 /*
     GPIO Register Reset macros
 */
 
-#define GPIOA_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 2)); (RCC->APB2RSTR &= ~(1 << 2));} while(0)
-#define GPIOB_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 3)); (RCC->APB2RSTR &= ~(1 << 3));} while(0)
-#define GPIOC_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 4)); (RCC->APB2RSTR &= ~(1 << 4));} while(0)
-#define GPIOD_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 5)); (RCC->APB2RSTR &= ~(1 << 5));} while(0)
-#define GPIOE_REG_RESET()                    do{(RCC->APB2RSTR |= (1 << 6)); (RCC->APB2RSTR &= ~(1 << 6));} while(0)
+#define GPIOA_REG_RESET()                    do{(RCC->APB2RSTR |= (1u << 2u)); (RCC->APB2RSTR &= ~(1u << 2u));} while(0)
+#define GPIOB_REG_RESET()                    do{(RCC->APB2RSTR |= (1u << 3u)); (RCC->APB2RSTR &= ~(1u << 3u));} while(0)
+#define GPIOC_REG_RESET()                    do{(RCC->APB2RSTR |= (1u << 4u)); (RCC->APB2RSTR &= ~(1u << 4u));} while(0)
+#define GPIOD_REG_RESET()                    do{(RCC->APB2RSTR |= (1u << 5u)); (RCC->APB2RSTR &= ~(1u << 5u));} while(0)
+#define GPIOE_REG_RESET()                    do{(RCC->APB2RSTR |= (1u << 6u)); (RCC->APB2RSTR &= ~(1u << 6u));} while(0)
 
 /*
     Clock enable macros for I2C
 */
 
-#define I2C1_PCLK_EN()                       (RCC->APB1ENR |= (1 << 21))
-#define I2C2_PCLK_EN()                       (RCC->APB1ENR |= (1 << 22))
+#define I2C1_PCLK_EN()                       (RCC->APB1ENR |= (1 << 21u))
+#define I2C2_PCLK_EN()                       (RCC->APB1ENR |= (1 << 22u))
 
 /*
     Clock disable macros for I2C
 */
 
-#define I2C1_PCLK_DI()                       (RCC->APB1ENR &= ~(1 << 21))
-#define I2C2_PCLK_DI()                       (RCC->APB1ENR &= ~(1 << 22))
+#define I2C1_PCLK_DI()                       (RCC->APB1ENR &= ~(1 << 21u))
+#define I2C2_PCLK_DI()                       (RCC->APB1ENR &= ~(1 << 22u))
 
 /*
     Clock enable macros for SPI
 */
 
-#define SPI1_PCLK_EN()                       (RCC->APB2ENR |= (1 << 12))
-#define SPI2_PCLK_EN()                       (RCC->APB1ENR |= (1 << 14))
+#define SPI1_PCLK_EN()                       (RCC->APB2ENR |= (1 << 12u))
+#define SPI2_PCLK_EN()                       (RCC->APB1ENR |= (1 << 14u))
 
 /*
     Clock disable macros for SPI
 */
 
-#define SPI1_PCLK_DI()                       (RCC->APB2ENR &= ~(1 << 12))
-#define SPI2_PCLK_DI()                       (RCC->APB1ENR &= ~(1 << 14))
+#define SPI1_PCLK_DI()                       (RCC->APB2ENR &= ~(1 << 12u))
+#define SPI2_PCLK_DI()                       (RCC->APB1ENR &= ~(1 << 14u))
 
 /*
     Clock enable macros for USART
 */
 
-#define USART1_PCLK_EN()                     (RCC->APB2ENR |= (1 << 14))
-#define USART2_PCLK_EN()                     (RCC->APB1ENR |= (1 << 17))
-#define USART3_PCLK_EN()                     (RCC->APB1ENR |= (1 << 18))
+#define USART1_PCLK_EN()                     (RCC->APB2ENR |= (1 << 14u))
+#define USART2_PCLK_EN()                     (RCC->APB1ENR |= (1 << 17u))
+#define USART3_PCLK_EN()                     (RCC->APB1ENR |= (1 << 18u))
 
 /*
     Clock disable macros for USART
 */
-#define USART1_PCLK_DI()                     (RCC->APB2ENR &= ~(1 << 14))
-#define USART2_PCLK_DI()                     (RCC->APB1ENR &= ~(1 << 17))
-#define USART3_PCLK_DI()                     (RCC->APB1ENR &= ~(1 << 18))
+#define USART1_PCLK_DI()                     (RCC->APB2ENR &= ~(1 << 14u))
+#define USART2_PCLK_DI()                     (RCC->APB1ENR &= ~(1 << 17u))
+#define USART3_PCLK_DI()                     (RCC->APB1ENR &= ~(1 << 18u))
 
 
 /*
     IRQ (Interrupt request) Numbers
 */
-#define IRQ_NO_EXTI0                        6
-#define IRQ_NO_EXTI1                        7
-#define IRQ_NO_EXTI2                        8
-#define IRQ_NO_EXTI3                        9
-#define IRQ_NO_EXTI4                        10
-#define IRQ_NO_EXTI9_5                      23
-#define IRQ_NO_EXTI15_10                    40
+#define IRQ_NO_EXTI0                        6u
+#define IRQ_NO_EXTI1                        7u
+#define IRQ_NO_EXTI2                        8u
+#define IRQ_NO_EXTI3                        9u
+#define IRQ_NO_EXTI4                        10u
+#define IRQ_NO_EXTI9_5                      23u
+#define IRQ_NO_EXTI15_10                    40u
 
 
 // Some general macros
-#define ENABLE                               1
-#define DISABLE                              0
+#define ENABLE                               1u
+#define DISABLE                              0u
 #define SET                                  ENABLE
 #define RESET                                DISABLE
 #define GPIO_SET_PIN                         ENABLE
