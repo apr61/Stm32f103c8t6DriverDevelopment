@@ -26,7 +26,7 @@ void delay(void)
 
 int main(void)
 {
-    GPIO_Handle_s GPIO_Led, GPIO_Btn;
+    GPIO_Handle_s GPIO_Led = {0}, GPIO_Btn = {0};
     GPIO_Led.GPIOx_p = GPIOA;
     GPIO_Led.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_5;
     GPIO_Led.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_OUT_PUSH_PULL;
@@ -35,27 +35,24 @@ int main(void)
 
     GPIO_Btn.GPIOx_p = GPIOB;
     GPIO_Btn.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_0;
-    GPIO_Btn.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_INPUT;
+    GPIO_Btn.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_INT_FALLING_TRI;
     GPIO_Btn.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
     GPIO_Btn.GPIO_PinConfig.GPIOPinPull = GPIO_PULL_UP;
 
     GPIO_PCLK_Control(GPIOB, ENABLE);
     GPIO_PCLK_Control(GPIOA, ENABLE);
-    GPIO_PCLK_Control(GPIOB, ENABLE);
     GPIO_Init(&GPIO_Led);
     GPIO_Init(&GPIO_Btn);
 
-    while(1)
-    {
-        if(GPIO_ReadInputPin(GPIOB, GPIO_PIN_0) == GPIO_RESET_PIN)
-        {
-            delay();
-            GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_SET_PIN);
-        }
-        else
-        {
-        	delay();
-        	GPIO_WriteOutputPin(GPIOA, GPIO_PIN_5, GPIO_RESET_PIN);
-        }
-    }
+    GPIO_IRQ_Priority(IRQ_NO_EXTI0, 15);
+    GPIO_IRQ_Config(IRQ_NO_EXTI0, ENABLE);
+
+    while(1);
+}
+
+void EXTI0_IRQHandler(void)
+{
+	delay();
+	GPIO_IRQ_Handling(GPIO_PIN_0);
+	GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 }
