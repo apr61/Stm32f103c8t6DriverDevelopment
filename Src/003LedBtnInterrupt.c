@@ -44,8 +44,8 @@ int main(void)
     GPIO_Init(&GPIO_Led);
     GPIO_Init(&GPIO_Btn);
 
-    GPIO_IRQ_Config(IRQ_NO_EXTI0, ENABLE);
     GPIO_IRQ_Priority(IRQ_NO_EXTI0, 15);
+    GPIO_IRQ_Config(IRQ_NO_EXTI0, ENABLE);
 
     while(1);
 }

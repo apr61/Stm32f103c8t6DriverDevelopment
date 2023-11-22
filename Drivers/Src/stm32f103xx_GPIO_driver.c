@@ -188,19 +188,6 @@ void GPIO_Init(GPIO_Handle_s * GPIO_Handle_p)
             EXTI->RTSR &= ~(1 << PinNumber);
         }
 
-
-        /* Raising - Falling edge trigger */
-        if((GPIO_Handle_p->GPIO_PinConfig.GPIOPinMode & GPIO_MODE_INT_RAISING_FALLING) == GPIO_MODE_INT_RAISING_FALLING)
-        {
-            EXTI->RTSR |= (1 << PinNumber);
-            EXTI->FTSR |= (1 << PinNumber);
-        }
-        else
-        {
-            EXTI->RTSR &= ~(1 << PinNumber);
-            EXTI->FTSR &= ~(1 << PinNumber);
-        }
-
         /* Configure IMR for EXTI interrupt delivery */
         EXTI->IMR |= (1 << PinNumber);
     }
@@ -251,7 +238,7 @@ void GPIO_DeInit(GPIO_RegDef_s * GPIOx_p)
 */
 uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8)
 {
-    uint8_t TempValue_u8 = 0u;
+    uint8_t TempValue_u8 = 0;
     TempValue_u8 = (uint8_t)((GPIOx_p->IDR >> PinNumber_u8) & 0x1u);
     return TempValue_u8;
 }/* END of GPIO_ReadInputPin */
@@ -265,7 +252,7 @@ uint8_t GPIO_ReadInputPin(GPIO_RegDef_s * GPIOx_p, uint8_t PinNumber_u8)
 */
 uint16_t GPIO_ReadInputPort(GPIO_RegDef_s * GPIOx_p)
 {
-    uint16_t TempValue_u16 = 0u;
+    uint16_t TempValue_u16 = 0;
     TempValue_u16 = (uint16_t)(GPIOx_p->IDR); 
     return TempValue_u16;
 }/* END of GPIO_ReadInputPort */
@@ -332,11 +319,11 @@ void GPIO_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8)
     {
         if(IRQ_Number_u8 <= 31u)
         {
-            *NVIC_ISER0 |= (1 << IRQ_Number_u8);
+            *NVIC_ISER0 |= (uint32_t)(1 << IRQ_Number_u8);
         }
         else /* IRQ Number 32 to 64 */
         {
-            *NVIC_ISER1 |= (1 << (IRQ_Number_u8 % 32u));
+            *NVIC_ISER1 |= (uint32_t)(1 << (IRQ_Number_u8 % 32u));
         }
     }
     else
