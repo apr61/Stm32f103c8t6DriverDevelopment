@@ -28,6 +28,9 @@
 
 #include <stdint.h>
 
+#define NULL                                ((void *) 0)
+#define __weak                              (__attribute__((weak)))
+
 typedef enum {
     FLAG_RESET = 0,
     FLAG_SET
@@ -285,6 +288,8 @@ typedef struct {
 #define IRQ_NO_EXTI4                        10u
 #define IRQ_NO_EXTI9_5                      23u
 #define IRQ_NO_EXTI15_10                    40u
+#define IRQ_NO_SPI1                         35u
+#define IRQ_NO_SPI2                         36u
 
 
 /* 

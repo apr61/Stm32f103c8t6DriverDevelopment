@@ -28,6 +28,12 @@ typedef struct
 typedef struct{
     SPI_RegDef_s *SPIx_p;
     SPI_Config_s SPI_Config;
+    uint8_t *TxBuffer_p; /* To Store app TxBuffer Address */
+    uint8_t *RxBuffer_p; /* To Store app RxBuffer Address */
+    uint8_t TxState_u8; /* To Store TxState - Ref @SPIStates */
+    uint8_t RxState_u8; /* To Store RxState - Ref @SPIStates */
+    uint32_t TxLen_u32; /* To Store TxLen */
+    uint32_t RxLen_u32; /* To Store RxLen */
 } SPI_Handle_s;
 
 /************************************ SPI Config Macros *****************************/
@@ -73,6 +79,19 @@ typedef struct{
 #define SPI_SR_TXE_FLAGMASK                 (1u << SPI_SR_TXE_POS)
 #define SPI_SR_BSY_FLAGMASK                 (1u << SPI_SR_BSY_POS)
 
+/********************************* SPI Status - @SPIStates **********************/
+
+#define SPI_READY                           0
+#define SPI_BUSY_IN_RX                      1u
+#define SPI_BUSY_IN_TX                      2u
+
+/************************************** SPI Events ********************************/
+typedef enum{
+    SPI_EventRxComplete = 0,
+    SPI_EventTxComplete,
+    SPI_OVR_Flow_Error,
+} SPI_Events_e;
+
 /**************************************** SPI API'S *******************************/
 
 /* SPI peripheral clock enable and disable */
@@ -87,14 +106,23 @@ void SPI_DeInit(SPI_RegDef_s * SPIx_p);
 void SPI_SendData(SPI_RegDef_s * SPIx_p, uint8_t *TxBuffer_p, uint32_t DataLen_u32);
 void SPI_ReceiveData(SPI_RegDef_s * SPIx_p, uint8_t *RxBuffer_p, uint32_t DataLen_u32);
 
+/* Data send and receive registers Using Interrupts */
+/* LENGTH of data always need tobe of type unsigned int */
+uint8_t SPI_SendDataIT(SPI_Handle_s * SPI_Handle_p, uint8_t *TxBuffer_p, uint32_t DataLen_u32);
+uint8_t SPI_ReceiveDataIT(SPI_Handle_s * SPI_Handle_p, uint8_t *RxBuffer_p, uint32_t DataLen_u32);
+
 
 /* SPI interrupt Configuration and handling */
 void SPI_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8);
 void SPI_IRQ_Priority(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8);
-void SPI_IRQ_Handling(SPI_RegDef_s * SPIx_p);
+void SPI_IRQ_Handling(SPI_Handle_s * SPI_Handle_p);
 
 /* Other SPI API's */
 FlagValue_e SPI_SR_GetFlagStatus(SPI_RegDef_s * SPIx_p, uint16_t FlagMask);
+void SPI_AppLicationEventCallback(SPI_Handle_s * SPI_Handle_p, SPI_Events_e SPI_Event);
+void SPI_CloseTransmission(SPI_Handle_s * SPI_Handle_p);
+void SPI_CloseReceiving(SPI_Handle_s * SPI_Handle_p);
+void SPI_Clear_OVR_Flag(SPI_Handle_s * SPI_Handle_p);
 
 #endif /* STM32F103XX_SPI_DRIVER_H_ */
 
