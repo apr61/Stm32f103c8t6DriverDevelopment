@@ -28,6 +28,18 @@
 
 #include <stdint.h>
 
+typedef enum { FLAG_RESET = 0, FLAG_SET } FlagValue_e;
+
+typedef enum { DISABLE = 0, ENABLE } PinStatus_e;
+
+// Some general macros
+#define SET ENABLE
+#define RESET DISABLE
+#define GPIO_SET_PIN ENABLE
+#define GPIO_RESET_PIN DISABLE
+
+#define READ_BIT(REG, INDEX)                                (REG & (1u << INDEX))
+
 #define GPIO_GET_INDEX(__gpio_address__)                                       \
   (((__gpio_address__) == (GPIOA))   ? 0u                                      \
    : ((__gpio_address__) == (GPIOB)) ? 1u                                      \
@@ -103,49 +115,35 @@
 
 // General purpose Input output structure
 typedef struct {
-  volatile uint32_t CRL;  /*Port configuration register low, \
-                          Address offset : 0x00*/
-  volatile uint32_t CRH;  /*Port configuration register high,
-                          Address offset : 0x04*/
+  volatile uint32_t CRL;  /*Port configuration register low, Address offset : 0x00*/
+  volatile uint32_t CRH;  /*Port configuration register high, Address offset : 0x04*/
   volatile uint32_t IDR;  /*Port input data register ,Address offset : 0x08*/
   volatile uint32_t ODR;  /*Port output data register ,Address offset : 0x0C*/
   volatile uint32_t BSRR; /*Port bit set/reset register ,Address offset : 0x10*/
   volatile uint32_t BRR;  /*Port bit reset register ,Address offset : 0x14*/
-  volatile uint32_t LCKR; /*Port configuration lock register,
-                       Address offset : 0x18*/
+  volatile uint32_t LCKR; /*Port configuration lock register, Address offset : 0x18*/
 } GPIO_RegDef_s;
 
 // Alternate function Input output structure
 typedef struct {
   volatile uint32_t EVCR;      /*Event control register ,Address offset : 0x00*/
-  volatile uint32_t MAPR;      /*AF remap and debug I/O configuration
-                                register,Address offset : 0x04*/
-  volatile uint32_t EXTICR[4]; /*External interrupt configuration
-                                register,Address offset : 0x08*/
+  volatile uint32_t MAPR;      /*AF remap and debug I/O configuration register,Address offset : 0x04*/
+  volatile uint32_t EXTICR[4]; /*External interrupt configuration register,Address offset : 0x08*/
   uint32_t RESERVED;           /*Reserved ,Address offset : 0x18*/
-  volatile uint32_t MAPR2;     /*AF remap and debug I/O configuration
-                          register2,Address offset : 0x1C*/
+  volatile uint32_t MAPR2;     /*AF remap and debug I/O configuration register2,Address offset : 0x1C*/
 } AFIO_RegDef_s;
 
 // RCC Register def structure
 typedef struct {
   volatile uint32_t CR;   /* Clock control register, Address offset : 0x00 */
-  volatile uint32_t CFGR; /* Clock configuration register,
-                            Address offset : 0x04 */
-  volatile uint32_t CIR;  /* Clock interrupt register,
-                            Address offset : 0x08 */
-  volatile uint32_t APB2RSTR; /* APB2 peripheral reset register,
-                                Address offset : 0x0C */
-  volatile uint32_t APB1RSTR; /* APB1 peripheral reset register,
-                                Address offset : 0x10 */
-  volatile uint32_t AHBENR;   /* AHB peripheral clock enable register,
-                                Address offset : 0x14 */
-  volatile uint32_t APB2ENR;  /* APB2 peripheral clock enable register,
-                              Address offset : 0x18 */
-  volatile uint32_t APB1ENR;  /* APB1 peripheral clock enable register,
-                                Address offset : 0x1C */
-  volatile uint32_t BDCR;     /* Backup domain control register,
-                              Address offset : 0x20 */
+  volatile uint32_t CFGR; /* Clock configuration register,Address offset : 0x04 */
+  volatile uint32_t CIR;  /* Clock interrupt register, Address offset : 0x08 */
+  volatile uint32_t APB2RSTR; /* APB2 peripheral reset register,Address offset : 0x0C */
+  volatile uint32_t APB1RSTR; /* APB1 peripheral reset register, Address offset : 0x10 */
+  volatile uint32_t AHBENR;   /* AHB peripheral clock enable register, Address offset : 0x14 */
+  volatile uint32_t APB2ENR;  /* APB2 peripheral clock enable register, Address offset : 0x18 */
+  volatile uint32_t APB1ENR;  /* APB1 peripheral clock enable register, Address offset : 0x1C */
+  volatile uint32_t BDCR;     /* Backup domain control register, Address offset : 0x20 */
   volatile uint32_t CSR; /* Control/status register, Address offset : 0x24 */
 } RCC_RegDef_t;
 
@@ -153,12 +151,9 @@ typedef struct {
 typedef struct {
   volatile uint32_t IMR;   /* Interrupt mask register , Address offset : 0x00 */
   volatile uint32_t EMR;   /* Event mask register , Address offset : 0x04 */
-  volatile uint32_t RTSR;  /* Rising trigger selection register,
-                             Address offset : 0x08 */
-  volatile uint32_t FTSR;  /* Falling trigger selection register ,
-                           Address offset : 0x0C */
-  volatile uint32_t SWIER; /* Software interrupt event register,
-                            Address offset : 0x10 */
+  volatile uint32_t RTSR;  /* Rising trigger selection register, Address offset : 0x08 */
+  volatile uint32_t FTSR;  /* Falling trigger selection register , Address offset : 0x0C */
+  volatile uint32_t SWIER; /* Software interrupt event register, Address offset : 0x10 */
   volatile uint32_t PR;    /* Pending register , Address offset : 0x14 */
 } EXTI_RegDef_t;
 
@@ -170,46 +165,45 @@ typedef struct {
   volatile uint32_t CR1;  /* Control register 1 , Address offset : 0x0C */
   volatile uint32_t CR2;  /* Control register 2, Address offset : 0x10 */
   volatile uint32_t CR3;  /* Control register 3 , Address offset : 0x14 */
-  volatile uint32_t GTPR; /* Guard time and prescaler register ,
-                            Address offset : 0x18 */
+  volatile uint32_t GTPR; /* Guard time and prescaler register, Address offset : 0x18 */
 } USART_RegDef_s;
 
 /* GPIO Peripheral defines */
 
-#define GPIOA ((GPIO_RegDef_s *)GPIOA_BASE_ADDR)
-#define GPIOB ((GPIO_RegDef_s *)GPIOB_BASE_ADDR)
-#define GPIOC ((GPIO_RegDef_s *)GPIOC_BASE_ADDR)
-#define GPIOD ((GPIO_RegDef_s *)GPIOD_BASE_ADDR)
-#define GPIOE ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
+#define GPIOA                                              ((GPIO_RegDef_s *)GPIOA_BASE_ADDR)
+#define GPIOB                                              ((GPIO_RegDef_s *)GPIOB_BASE_ADDR)
+#define GPIOC                                              ((GPIO_RegDef_s *)GPIOC_BASE_ADDR)
+#define GPIOD                                              ((GPIO_RegDef_s *)GPIOD_BASE_ADDR)
+#define GPIOE                                              ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
 
-#define RCC ((RCC_RegDef_t *)RCC_BASE_ADDR)
-#define EXTI ((EXTI_RegDef_t *)EXTI_BASE_ADDR)
-#define AFIO ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
-#define USART1 ((USART_RegDef_s)USART1_BASE_ADDR)
-#define USART2 ((USART_RegDef_s)USART2_BASE_ADDR)
-#define USART3 ((USART_RegDef_s)USART3_BASE_ADDR)
+#define RCC                                                ((RCC_RegDef_t *)RCC_BASE_ADDR)
+#define EXTI                                               ((EXTI_RegDef_t *)EXTI_BASE_ADDR)
+#define AFIO                                               ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
+#define USART1                                             ((USART_RegDef_s)USART1_BASE_ADDR)
+#define USART2                                             ((USART_RegDef_s)USART2_BASE_ADDR)
+#define USART3                                             ((USART_RegDef_s)USART3_BASE_ADDR)
 
 /*
     Clock enable macros for GPIO, AFIO
 */
 
-#define GPIOA_PCLK_EN() (RCC->APB2ENR |= (1u << 2u))
-#define GPIOB_PCLK_EN() (RCC->APB2ENR |= (1u << 3u))
-#define GPIOC_PCLK_EN() (RCC->APB2ENR |= (1u << 4u))
-#define GPIOD_PCLK_EN() (RCC->APB2ENR |= (1u << 5u))
-#define GPIOE_PCLK_EN() (RCC->APB2ENR |= (1u << 6u))
-#define AFIO_PCLK_EN() (RCC->APB2ENR |= (1u << 0u))
+#define GPIOA_PCLK_EN()                                    (RCC->APB2ENR |= (1u << 2u))
+#define GPIOB_PCLK_EN()                                    (RCC->APB2ENR |= (1u << 3u))
+#define GPIOC_PCLK_EN()                                    (RCC->APB2ENR |= (1u << 4u))
+#define GPIOD_PCLK_EN()                                    (RCC->APB2ENR |= (1u << 5u))
+#define GPIOE_PCLK_EN()                                    (RCC->APB2ENR |= (1u << 6u))
+#define AFIO_PCLK_EN()                                     (RCC->APB2ENR |= (1u << 0u))
 
 /*
     Clock disable macros for GPIO
 */
 
-#define GPIOA_PCLK_DI() (RCC->APB2ENR &= ~(1u << 2u))
-#define GPIOB_PCLK_DI() (RCC->APB2ENR &= ~(1u << 3u))
-#define GPIOC_PCLK_DI() (RCC->APB2ENR &= ~(1u << 4u))
-#define GPIOD_PCLK_DI() (RCC->APB2ENR &= ~(1u << 5u))
-#define GPIOE_PCLK_DI() (RCC->APB2ENR &= ~(1u << 6u))
-#define AFIO_PCLK_DI() (RCC->APB2ENR &= ~(1u << 0))
+#define GPIOA_PCLK_DI()                                    (RCC->APB2ENR &= ~(1u << 2u))
+#define GPIOB_PCLK_DI()                                    (RCC->APB2ENR &= ~(1u << 3u))
+#define GPIOC_PCLK_DI()                                    (RCC->APB2ENR &= ~(1u << 4u))
+#define GPIOD_PCLK_DI()                                    (RCC->APB2ENR &= ~(1u << 5u))
+#define GPIOE_PCLK_DI()                                    (RCC->APB2ENR &= ~(1u << 6u))
+#define AFIO_PCLK_DI()                                     (RCC->APB2ENR &= ~(1u << 0))
 
 /*
     GPIO Register Reset macros
@@ -246,68 +240,141 @@ typedef struct {
   } while (0)
 
 /*
+  USART Reset Register macros
+*/
+
+#define USART1_REG_RESET()                                                     \
+do {                                                                           \
+  (RCC->APB2RSTR |= (1u << 14u));                                              \
+  (RCC->APB2RSTR &= ~(1u << 14u));                                             \
+} while (0)
+
+#define USART2_REG_RESET()                                                     \
+do {                                                                           \
+  (RCC->APB1RSTR |= (1u << 17u));                                              \
+  (RCC->APB1RSTR &= ~(1u << 17u));                                             \
+} while (0)
+
+#define USART3_REG_RESET()                                                     \
+do {                                                                           \
+  (RCC->APB1RSTR |= (1u << 18u));                                              \
+  (RCC->APB1RSTR &= ~(1u << 18u));                                             \
+} while (0)
+
+/*
     Clock enable macros for I2C
 */
 
-#define I2C1_PCLK_EN() (RCC->APB1ENR |= (1 << 21u))
-#define I2C2_PCLK_EN() (RCC->APB1ENR |= (1 << 22u))
+#define I2C1_PCLK_EN()                                     (RCC->APB1ENR |= (1 << 21u))
+#define I2C2_PCLK_EN()                                     (RCC->APB1ENR |= (1 << 22u))
 
 /*
     Clock disable macros for I2C
 */
 
-#define I2C1_PCLK_DI() (RCC->APB1ENR &= ~(1 << 21u))
-#define I2C2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 22u))
+#define I2C1_PCLK_DI()                                     (RCC->APB1ENR &= ~(1 << 21u))
+#define I2C2_PCLK_DI()                                     (RCC->APB1ENR &= ~(1 << 22u))
 
 /*
     Clock enable macros for SPI
 */
 
-#define SPI1_PCLK_EN() (RCC->APB2ENR |= (1 << 12u))
-#define SPI2_PCLK_EN() (RCC->APB1ENR |= (1 << 14u))
+#define SPI1_PCLK_EN()                                     (RCC->APB2ENR |= (1 << 12u))
+#define SPI2_PCLK_EN()                                     (RCC->APB1ENR |= (1 << 14u))
 
 /*
     Clock disable macros for SPI
 */
 
-#define SPI1_PCLK_DI() (RCC->APB2ENR &= ~(1 << 12u))
-#define SPI2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 14u))
+#define SPI1_PCLK_DI()                                     (RCC->APB2ENR &= ~(1 << 12u))
+#define SPI2_PCLK_DI()                                     (RCC->APB1ENR &= ~(1 << 14u))
 
 /*
     Clock enable macros for USART
 */
 
-#define USART1_PCLK_EN() (RCC->APB2ENR |= (1 << 14u))
-#define USART2_PCLK_EN() (RCC->APB1ENR |= (1 << 17u))
-#define USART3_PCLK_EN() (RCC->APB1ENR |= (1 << 18u))
+#define USART1_PCLK_EN()                                   (RCC->APB2ENR |= (1 << 14u))
+#define USART2_PCLK_EN()                                   (RCC->APB1ENR |= (1 << 17u))
+#define USART3_PCLK_EN()                                   (RCC->APB1ENR |= (1 << 18u))
 
 /*
     Clock disable macros for USART
 */
-#define USART1_PCLK_DI() (RCC->APB2ENR &= ~(1 << 14u))
-#define USART2_PCLK_DI() (RCC->APB1ENR &= ~(1 << 17u))
-#define USART3_PCLK_DI() (RCC->APB1ENR &= ~(1 << 18u))
+#define USART1_PCLK_DI()                                   (RCC->APB2ENR &= ~(1 << 14u))
+#define USART2_PCLK_DI()                                   (RCC->APB1ENR &= ~(1 << 17u))
+#define USART3_PCLK_DI()                                   (RCC->APB1ENR &= ~(1 << 18u))
 
 /*
     IRQ (Interrupt request) Numbers
 */
-#define IRQ_NO_EXTI0 6u
-#define IRQ_NO_EXTI1 7u
-#define IRQ_NO_EXTI2 8u
-#define IRQ_NO_EXTI3 9u
-#define IRQ_NO_EXTI4 10u
-#define IRQ_NO_EXTI9_5 23u
-#define IRQ_NO_EXTI15_10 40u
+#define IRQ_NO_EXTI0                                       6u
+#define IRQ_NO_EXTI1                                       7u
+#define IRQ_NO_EXTI2                                       8u
+#define IRQ_NO_EXTI3                                       9u
+#define IRQ_NO_EXTI4                                       10u
+#define IRQ_NO_EXTI9_5                                     23u
+#define IRQ_NO_EXTI15_10                                   40u
 
-// Some general macros
-#define ENABLE 1u
-#define DISABLE 0u
-#define SET ENABLE
-#define RESET DISABLE
-#define GPIO_SET_PIN ENABLE
-#define GPIO_RESET_PIN DISABLE
+/*
+    USART SR Register bit index
+*/
+#define USART_SR_PE_POS                                    0
+#define USART_SR_FE_POS                                    1u
+#define USART_SR_NE_POS                                    2u
+#define USART_SR_ORE_POS                                   3u
+#define USART_SR_IDLE_POS                                  4u
+#define USART_SR_RXNE_POS                                  5u
+#define USART_SR_TC_POS                                    6u
+#define USART_SR_TXE_POS                                   7u
+#define USART_SR_LBD_POS                                   8u
+#define USART_SR_CTS_POS                                   9u
+
+/*
+    USART CR1 Register bit index
+*/
+#define USART_CR1_SBK_POS                                  0
+#define USART_CR1_RWU_POS                                  1u
+#define USART_CR1_RE_POS                                   2u
+#define USART_CR1_TE_POS                                   3u
+#define USART_CR1_IDLEIE_POS                               4u
+#define USART_CR1_RXNEIE_POS                               5u
+#define USART_CR1_TCIE_POS                                 6u
+#define USART_CR1_TXEIE_POS                                7u
+#define USART_CR1_PEIE_POS                                 8u
+#define USART_CR1_PS_POS                                   9u
+#define USART_CR1_PCE_POS                                  10u
+#define USART_CR1_WAKE_POS                                 11u
+#define USART_CR1_M_POS                                    12u
+#define USART_CR1_UE_POS                                   13u
+
+/*
+    USART CR2 Register bit index
+*/
+#define USART_CR2_ADD_POS                                  0
+#define USART_CR2_LBDL_POS                                 5u
+#define USART_CR2_LBDIE_POS                                6u
+#define USART_CR2_LBCL_POS                                 8u
+#define USART_CR2_CPHA_POS                                 9u
+#define USART_CR2_CPOL_POS                                 10u
+#define USART_CR2_CLKEN_POS                                11u
+#define USART_CR2_STOP_POS                                 12u
+#define USART_CR2_LINEN_POS                                14u
+
+/*
+    USART CR3 Register bit index
+*/
+#define USART_CR3_EIE_POS                                  0
+#define USART_CR3_IREN_POS                                 1u
+#define USART_CR3_IRLP_POS                                 2u
+#define USART_CR3_HDSEL_POS                                3u
+#define USART_CR3_NACK_POS                                 4u
+#define USART_CR3_SCEN_POS                                 5u
+#define USART_CR3_DMAR_POS                                 6u
+#define USART_CR3_DMAT_POS                                 7u
+#define USART_CR3_RTSE_POS                                 8u
+#define USART_CR3_CTSE_POS                                 9u
+#define USART_CR3_CTSIE_POS                                10u
 
 #endif /* STM32F103XX_H_ */
 
-/********************************* END of file
- * *************************************/
+/********************************* END of file **************************************/
