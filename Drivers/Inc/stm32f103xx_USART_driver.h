@@ -112,8 +112,8 @@ void USART_DeInit(USART_RegDef_s *USARTx_p);
 void USART_Tx(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_t Len_u32);
 void USART_Rx(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len_u32);
 /* USART Transmitter and Receiver Interrupt based*/
-void USART_TxIT(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_t Len_u32);
-void USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len_u32);
+uint8_t USART_TxIT(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_t Len_u32);
+uint8_t USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len_u32);
 
 /* USART interrupt Configuration and handling */
 void USART_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8);

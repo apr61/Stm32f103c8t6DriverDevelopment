@@ -8,6 +8,7 @@
 
 /********************************* Includes
  * ************************************/
+#include "stm32f103xx.h"
 #include "stm32f103xx_USART_driver.h"
 
 /* USART peripheral clock enable and disable */
@@ -29,7 +30,7 @@ void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e) {
       USART3_PCLK_EN();
     }
   }
-  if (DISABLE == EnOrDi_u8) {
+  if (DISABLE == EnOrDi_e) {
     if (USART1 == USARTx_p) {
       USART1_PCLK_DI();
     } else if (USART2 == USARTx_p) {
@@ -110,17 +111,17 @@ void USART_Init(USART_Handle_s * USART_Handle_p)
 	TempReg_u32=0;
 	
 	//Configuration of USART hardware flow control 
-	if (USART_Handle_p->USART_Config.USART_HWFlowControl == USART_HW_FLOW_CTRL_CTS)
+	if (USART_Handle_p->USART_Config.USART_HwFlowControl == USART_HW_FLOW_CTRL_CTS)
 	{
 		//Implement the code to enable CTS flow control 
 		TempReg_u32 |= (1 << USART_CR3_CTSE_POS);
 	}
-	else if (USART_Handle_p->USART_Config.USART_HWFlowControl == USART_HW_FLOW_CTRL_RTS)
+	else if (USART_Handle_p->USART_Config.USART_HwFlowControl == USART_HW_FLOW_CTRL_RTS)
 	{
 		//Implement the code to enable RTS flow control 
 		TempReg_u32 |= (1 << USART_CR3_RTSE_POS);
 	}
-	else if (USART_Handle_p->USART_Config.USART_HWFlowControl == USART_HW_FLOW_CTRL_CTS_RTS)
+	else if (USART_Handle_p->USART_Config.USART_HwFlowControl == USART_HW_FLOW_CTRL_CTS_RTS)
 	{
 		//Implement the code to enable both CTS and RTS Flow control 
 		TempReg_u32 |= ((1 << USART_CR3_RTSE_POS) | (1 << USART_CR3_CTSE_POS));
@@ -259,14 +260,14 @@ void USART_Rx(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len
 				//No parity is used , so all 8bits will be of user data
 
 				//read 8 bits from DR
-				*pRxBuffer = (uint8_t) (USART_Handle_p->pUSARTx->DR  & (uint8_t)0xFF);
+				*RxBuffer_p = (uint8_t) (USART_Handle_p->USARTx_p->DR  & (uint8_t)0xFF);
 			}
 			else
 			{
 				//Parity is used, so , 7 bits will be of user data and 1 bit is parity
 
 				//read only 7 bits , hence mask the DR with 0X7F
-				*pRxBuffer = (uint8_t) (USART_Handle_p->pUSARTx->DR  & (uint8_t)0x7F);
+				*RxBuffer_p = (uint8_t) (USART_Handle_p->USARTx_p->DR  & (uint8_t)0x7F);
 
 			}
 
@@ -290,7 +291,7 @@ uint8_t USART_TxIT(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_
 	{
 		USART_Handle_p->TxLen_u32 = Len_u32;
 		USART_Handle_p->TxBuffer_p = TxBuffer_p;
-		USART_Handle_p->TxState = USART_BUSY_IN_TX;
+		USART_Handle_p->TxState_u8 = USART_BUSY_IN_TX;
 
 		//Implement the code to enable interrupt for TXE
 		USART_Handle_p->USARTx_p->CR1 |= (1 << USART_CR1_TXEIE_POS);
@@ -316,9 +317,9 @@ uint8_t USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_
 	uint8_t RxState_u8 = USART_Handle_p->RxState_u8;
 	if(RxState_u8 != USART_BUSY_IN_RX)
 	{
-		USART_Handle_p->RxLen = Len_u32;
+		USART_Handle_p->RxLen_u32 = Len_u32;
 		USART_Handle_p->RxBuffer_p = RxBuffer_p;
-		USART_Handle_p->RxState = USART_BUSY_IN_RX;
+		USART_Handle_p->RxState_u8 = USART_BUSY_IN_RX;
 		//Implement the code to enable interrupt for RXNE
 		USART_Handle_p->USARTx_p->CR1 |= (1 << USART_CR1_RXNEIE_POS);
 
@@ -337,7 +338,7 @@ uint8_t USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_
 */
 void USART_IRQ_Config(uint8_t IRQ_Number_u8, PinStatus_e EnOrDi_e)
 {
-	if(EnOrDi_u8 == ENABLE)
+	if(EnOrDi_e == ENABLE)
 	{
 		if(IRQ_Number_u8 <= 31u)
 		{

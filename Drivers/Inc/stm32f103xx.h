@@ -179,9 +179,9 @@ typedef struct {
 #define RCC                                                ((RCC_RegDef_t *)RCC_BASE_ADDR)
 #define EXTI                                               ((EXTI_RegDef_t *)EXTI_BASE_ADDR)
 #define AFIO                                               ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
-#define USART1                                             ((USART_RegDef_s)USART1_BASE_ADDR)
-#define USART2                                             ((USART_RegDef_s)USART2_BASE_ADDR)
-#define USART3                                             ((USART_RegDef_s)USART3_BASE_ADDR)
+#define USART1                                             ((USART_RegDef_s *)USART1_BASE_ADDR)
+#define USART2                                             ((USART_RegDef_s *)USART2_BASE_ADDR)
+#define USART3                                             ((USART_RegDef_s *)USART3_BASE_ADDR)
 
 /*
     Clock enable macros for GPIO, AFIO
