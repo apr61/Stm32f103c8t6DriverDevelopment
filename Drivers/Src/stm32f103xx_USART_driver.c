@@ -1,13 +1,11 @@
-/********************************* Abbreviations
- * ************************************/
+/********************************* Abbreviations *************************************/
 /*
-        USART : Universal Synchronous Asynchronous Receiver Transmitter
-        PCLK : Peripheral Clock
-        IRQ  : Interrupt Request
+    USART : Universal Synchronous Asynchronous Receiver Transmitter
+    PCLK : Peripheral Clock
+    IRQ  : Interrupt Request
 */
 
-/********************************* Includes
- * ************************************/
+/********************************* Includes *************************************/
 #include "stm32f103xx.h"
 #include "stm32f103xx_USART_driver.h"
 
@@ -41,6 +39,53 @@ void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e) {
   }
 } /* END of USART_PCLK_Control function*/
 
+/* USART SetBaudRate */
+
+void USART_SetBaudRate(USART_RegDef_s *USARTx_p, uint32_t BaudRate_u32)
+{
+	//Variable to hold the APB clock
+	uint32_t PCLKx_u32;
+
+	uint32_t USARTDIV_u32;
+
+	//variables to hold Mantissa and Fraction values
+	uint32_t M_Part_u32,F_Part_u32;
+
+	uint32_t TempReg_u32=0;
+
+	//Get the value of APB bus clock in to the variable PCLKx_u32
+	if(USARTx_p == USART1)
+  	{
+		//USART1 and USART6 are hanging on APB2 bus
+		PCLKx_u32 = RCC_GetPCLK2Value();
+	}
+	else
+	{
+		PCLKx_u32 = RCC_GetPCLK1Value();
+  	}
+
+	//Check for OVER8 configuration bit
+	USARTDIV_u32 = ((25u * PCLKx_u32) / (4u * BaudRate_u32));
+	
+  	//Calculate the Mantissa part
+  	M_Part_u32 = (USARTDIV_u32 / 100u);
+	
+  	//Place the Mantissa part in appropriate bit position . refer USART_BRR
+  	TempReg_u32 |= (M_Part_u32 << 4u);
+
+ 	//Extract the fraction part
+  	F_Part_u32 = (USARTDIV_u32 - (M_Part_u32 * 100u));
+
+  	//Calculate the final fractional
+	F_Part_u32 = (((F_Part_u32 * 16u)+ 50u) / 100u) & (0xFu);
+	
+  	//Place the fractional part in appropriate bit position . refer USART_BRR
+  	TempReg_u32 |= F_Part_u32;
+
+  	//copy the value of TempReg_u32 in to BRR register
+  	USARTx_p->BRR = TempReg_u32;
+}/* END of USART_SetBaudRate */
+
 /* USART Init, DeInit*/
 /*
 	Function name    :    USART_Init
@@ -53,7 +98,7 @@ void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e) {
 void USART_Init(USART_Handle_s * USART_Handle_p)
 {
 	//Temporary variable
-	uint32_t TempReg_u32=0;
+	uint32_t TempReg_u32_u32_u32=0;
 
 	/******************************** Configuration of CR1******************************************/
 	//Implement the code to enable the Clock for given USART peripheral
@@ -63,75 +108,75 @@ void USART_Init(USART_Handle_s * USART_Handle_p)
 	if ( USART_Handle_p->USART_Config.USART_Mode == USART_MODE_ONLY_RX)
 	{
 		//Implement the code to enable the Receiver bit field 
-		TempReg_u32|= (1 << USART_CR1_RE_POS);
+		TempReg_u32_u32_u32|= (1 << USART_CR1_RE_POS);
 	}
 	else if (USART_Handle_p->USART_Config.USART_Mode == USART_MODE_ONLY_TX)
 	{
 		//Implement the code to enable the Transmitter bit field 
-		TempReg_u32 |= ( 1 << USART_CR1_TE_POS);
+		TempReg_u32_u32_u32 |= ( 1 << USART_CR1_TE_POS);
 	}
 	else if (USART_Handle_p->USART_Config.USART_Mode == USART_MODE_TXRX)
 	{
 		//Implement the code to enable the both Transmitter and Receiver bit fields 
-		TempReg_u32 |= (( 1 << USART_CR1_RE_POS) | ( 1 << USART_CR1_TE_POS));
+		TempReg_u32_u32_u32 |= (( 1 << USART_CR1_RE_POS) | ( 1 << USART_CR1_TE_POS));
 	}
 
 	//Implement the code to configure the Word length configuration item 
-	TempReg_u32 |= (USART_Handle_p->USART_Config.USART_WordLength << USART_CR1_M_POS) ;
+	TempReg_u32_u32_u32 |= (USART_Handle_p->USART_Config.USART_WordLength << USART_CR1_M_POS) ;
 	
 	//Configuration of parity control bit fields
 	if (USART_Handle_p->USART_Config.USART_ParityControl == USART_PARITY_EN_EVEN)
 	{
 		//Implement the code to enale the parity control 
-		TempReg_u32 |= (1 << USART_CR1_PCE_POS);
+		TempReg_u32_u32_u32 |= (1 << USART_CR1_PCE_POS);
 		//Implement the code to enable EVEN parity 
 		//Not required because by default EVEN parity will be selected once you enable the parity control 
 	}
 	else if (USART_Handle_p->USART_Config.USART_ParityControl == USART_PARITY_EN_ODD)
 	{
 		//Implement the code to enable the parity control 
-		TempReg_u32 |= (1 << USART_CR1_PCE_POS);
+		TempReg_u32_u32_u32 |= (1 << USART_CR1_PCE_POS);
 		//Implement the code to enable ODD parity - SET
-		TempReg_u32 |= ( 1 << USART_CR1_PS_POS);
+		TempReg_u32_u32_u32 |= ( 1 << USART_CR1_PS_POS);
 	}
 	
 	//Program the CR1 register 
-	USART_Handle_p->USARTx_p->CR1 = TempReg_u32;
+	USART_Handle_p->USARTx_p->CR1 = TempReg_u32_u32_u32;
 
 	/******************************** Configuration of CR2******************************************/
-	TempReg_u32=0;
+	TempReg_u32_u32_u32=0;
 	
 	//Implement the code to configure the number of stop bits inserted during USART frame transmission 
-	TempReg_u32 |= (USART_Handle_p->USART_Config.USART_NoOfStopBits << USART_CR2_STOP_POS);
+	TempReg_u32_u32_u32 |= (USART_Handle_p->USART_Config.USART_NoOfStopBits << USART_CR2_STOP_POS);
 	
 	//Program the CR2 register 
-	USART_Handle_p->USARTx_p->CR2 = TempReg_u32;
+	USART_Handle_p->USARTx_p->CR2 = TempReg_u32_u32_u32;
 
 	/******************************** Configuration of CR3******************************************/
-	TempReg_u32=0;
+	TempReg_u32_u32_u32=0;
 	
 	//Configuration of USART hardware flow control 
 	if (USART_Handle_p->USART_Config.USART_HwFlowControl == USART_HW_FLOW_CTRL_CTS)
 	{
 		//Implement the code to enable CTS flow control 
-		TempReg_u32 |= (1 << USART_CR3_CTSE_POS);
+		TempReg_u32_u32_u32 |= (1 << USART_CR3_CTSE_POS);
 	}
 	else if (USART_Handle_p->USART_Config.USART_HwFlowControl == USART_HW_FLOW_CTRL_RTS)
 	{
 		//Implement the code to enable RTS flow control 
-		TempReg_u32 |= (1 << USART_CR3_RTSE_POS);
+		TempReg_u32_u32_u32 |= (1 << USART_CR3_RTSE_POS);
 	}
 	else if (USART_Handle_p->USART_Config.USART_HwFlowControl == USART_HW_FLOW_CTRL_CTS_RTS)
 	{
 		//Implement the code to enable both CTS and RTS Flow control 
-		TempReg_u32 |= ((1 << USART_CR3_RTSE_POS) | (1 << USART_CR3_CTSE_POS));
+		TempReg_u32_u32_u32 |= ((1 << USART_CR3_RTSE_POS) | (1 << USART_CR3_CTSE_POS));
 	}
-	USART_Handle_p->USARTx_p->CR3 = TempReg_u32;
+	USART_Handle_p->USARTx_p->CR3 = TempReg_u32_u32_u32;
 
-	/******************************** Configuration of BRR(Baudrate register)******************************************/
+	/******************************** Configuration of BRR(BaudRate_u32 register)******************************************/
 	//Implement the code to configure the baud rate
 	//We will cover this in the lecture. No action required here 
-	
+	USART_SetBaudRate(USART_Handle_p->USARTx_p, USART_Handle_p->USART_BaudRate);
 } /* END of USART_Init */
 
 /*
@@ -172,7 +217,10 @@ void USART_Tx(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_t Len
 	for(uint32_t i = 0 ; i < Len_u32; i++)
 	{
 		//Implement the code to wait until TXE flag is set in the SR
-		while(RESET == READ_BIT(USART_Handle_p->USARTx_p->SR, USART_SR_TXE_POS));
+		while(RESET == READ_BIT(USART_Handle_p->USARTx_p->SR, USART_SR_TXE_POS))
+		{
+			;
+		}
 		 //Check the USART_WordLength item for 9BIT or 8BIT in a frame
 		if(USART_Handle_p->USART_Config.USART_WordLength == USART_WORDLEN_9BITS)
 		{
@@ -203,7 +251,10 @@ void USART_Tx(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_t Len
 		}
 	}
 	//Implement the code to wait till TC flag is set in the SR
-	while(RESET == READ_BIT(USART_Handle_p->USARTx_p->SR, USART_SR_TC_POS));
+	while(RESET == READ_BIT(USART_Handle_p->USARTx_p->SR, USART_SR_TC_POS))
+	{
+		;
+	}
 } /* END of USART_Tx */
 
 /*
@@ -246,7 +297,6 @@ void USART_Rx(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len
 			{
 				//Parity is used, so, 8bits will be of user data and 1 bit is parity
 				 *RxBuffer_p = (USART_Handle_p->USARTx_p->DR  & (uint8_t)0xFF);
-
 				 //Increment the RxBuffer_p
 				RxBuffer_p++;
 			}
@@ -258,19 +308,15 @@ void USART_Rx(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len
 			if(USART_Handle_p->USART_Config.USART_ParityControl == USART_PARITY_DISABLE)
 			{
 				//No parity is used , so all 8bits will be of user data
-
 				//read 8 bits from DR
 				*RxBuffer_p = (uint8_t) (USART_Handle_p->USARTx_p->DR  & (uint8_t)0xFF);
 			}
 			else
 			{
 				//Parity is used, so , 7 bits will be of user data and 1 bit is parity
-
 				//read only 7 bits , hence mask the DR with 0X7F
 				*RxBuffer_p = (uint8_t) (USART_Handle_p->USARTx_p->DR  & (uint8_t)0x7F);
-
 			}
-
 			//increment the RxBuffer_p
 			RxBuffer_p++;
 		}
@@ -295,11 +341,8 @@ uint8_t USART_TxIT(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_
 
 		//Implement the code to enable interrupt for TXE
 		USART_Handle_p->USARTx_p->CR1 |= (1 << USART_CR1_TXEIE_POS);
-
-
 		//Implement the code to enable interrupt for TC 
 		USART_Handle_p->USARTx_p->CR1 |= (1 << USART_CR1_TCIE_POS);
-		
 	}
 	return TxState_u8;
 } /* END of USART_TxIT */
@@ -322,7 +365,6 @@ uint8_t USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_
 		USART_Handle_p->RxState_u8 = USART_BUSY_IN_RX;
 		//Implement the code to enable interrupt for RXNE
 		USART_Handle_p->USARTx_p->CR1 |= (1 << USART_CR1_RXNEIE_POS);
-
 	}
 	return RxState_u8;
 } /* END of USART_RxIT */

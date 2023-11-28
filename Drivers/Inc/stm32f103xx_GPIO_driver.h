@@ -93,9 +93,9 @@ typedef struct {
  * 	@GPIO_Pull_up_down defines
  *
  */
-#define GPIO_NO_PULL 0x00000000u   /*!< No Pull-up or Pull-down activation  */
-#define GPIO_PULL_UP 0x00000001u   /*!< Pull-up activation                  */
-#define GPIO_PULL_DOWN 0x00000002u /*!< Pull-down activation                */
+#define GPIO_NO_PULL 0x00000000u   /* No Pull-up or Pull-down activation  */
+#define GPIO_PULL_UP 0x00000001u   /* Pull-up activation                  */
+#define GPIO_PULL_DOWN 0x00000002u /* Pull-down activation                */
 
 // Speed of output mode, @GPIO_SPEED
 #define GPIO_SPEED_MEDIUM 0x1u /* GPIO MODE OUT, MAX speed 10MHz */
