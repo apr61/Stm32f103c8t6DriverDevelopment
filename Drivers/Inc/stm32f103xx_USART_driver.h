@@ -103,6 +103,7 @@ typedef struct {
 
 /* USART Peripheral Clock Control */
 void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e);
+void USART_PeripheralControl(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e);
 
 /* USART Init and Deinit */
 void USART_Init(USART_Handle_s * USART_Handle_p);

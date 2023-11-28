@@ -13,6 +13,6 @@
 
 uint32_t RCC_GetPCLK1Value(void);
 uint32_t RCC_GetPCLK2Value(void);
-
+uint32_t RCC_GetPLLOutputClock(void);
 
 #endif /* STM32F103XX_RCC_DRIVER_H_ */

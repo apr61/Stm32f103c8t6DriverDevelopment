@@ -11,10 +11,10 @@
 /********************************* Abbreviations
  * ************************************/
 /*
-    GPIO : General Purpose Input and Output
-    PCLK : Peripheral Clock
-    IRQ  : Interrupt Request
-*/
+ GPIO : General Purpose Input and Output
+ PCLK : Peripheral Clock
+ IRQ  : Interrupt Request
+ */
 
 /********************************* Includes
  * ************************************/
@@ -22,16 +22,16 @@
 
 // GPIO configuration
 typedef struct {
-  uint32_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
-  uint32_t GPIOPinMode;   /* Refer to @GPIO_PIN_MODES */
-  uint32_t GPIOPinSpeed;  /* Refer to @GPIO_SPEED */
-  uint32_t GPIOPinPull;   /* Refer to @GPIO_Pull_up_down */
+	uint32_t GPIOPinNumber; /* Refer to @GPIO_PIN_NUMBERS */
+	uint32_t GPIOPinMode; /* Refer to @GPIO_PIN_MODES */
+	uint32_t GPIOPinSpeed; /* Refer to @GPIO_SPEED */
+	uint32_t GPIOPinPull; /* Refer to @GPIO_Pull_up_down */
 } GPIO_PinConfig_s;
 
 // GPIO Handle
 typedef struct {
-  GPIO_RegDef_s *GPIOx_p;
-  GPIO_PinConfig_s GPIO_PinConfig;
+	GPIO_RegDef_s *GPIOx_p;
+	GPIO_PinConfig_s GPIO_PinConfig;
 } GPIO_Handle_s;
 
 /* @GPIO_PIN_NUMBERS */
@@ -53,8 +53,8 @@ typedef struct {
 #define GPIO_PIN_15 15u
 
 /*
-    @GPIO_PIN_MODES
-*/
+ @GPIO_PIN_MODES
+ */
 
 #define EXTI_MODE 0x10000000u
 #define GPIO_MODE_IT 0x00010000u
@@ -75,8 +75,7 @@ typedef struct {
 #define GPIO_MODE_ALT_OD 6u /* Open Drain */
 
 /* GPIO External interrupt - Event */
-#define GPIO_MODE_INT_FALLING_TRI                                              \
-  0x10110000u /* External Interrupt Falling Edge */
+#define GPIO_MODE_INT_FALLING_TRI                              0x10110000u /* External Interrupt Falling Edge */
 #define GPIO_MODE_INT_RAISING_TRI                                              \
   0x10210000u /* External Interrupt Raising Edge */
 #define GPIO_MODE_INT_RAISING_FALLING                                          \
@@ -131,7 +130,7 @@ void GPIO_DeInit(GPIO_RegDef_s *GPIOx_p);
 uint8_t GPIO_ReadInputPin(GPIO_RegDef_s *GPIOx_p, uint8_t PinNumber_u8);
 uint16_t GPIO_ReadInputPort(GPIO_RegDef_s *GPIOx_p);
 void GPIO_WriteOutputPin(GPIO_RegDef_s *GPIOx_p, uint8_t PinNumber_u8,
-                         uint8_t Value_u8);
+		uint8_t Value_u8);
 void GPIO_WriteOutputPort(GPIO_RegDef_s *GPIOx_p, uint16_t Value_u16);
 void GPIO_TogglePin(GPIO_RegDef_s *GPIOx_p, uint8_t PinNumber_u8);
 
