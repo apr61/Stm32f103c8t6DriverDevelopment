@@ -33,12 +33,13 @@ typedef enum { FLAG_RESET = 0, FLAG_SET } FlagValue_e;
 typedef enum { DISABLE = 0, ENABLE } PinStatus_e;
 
 // Some general macros
-#define SET ENABLE
-#define RESET DISABLE
+#define SET 1
+#define RESET 0
 #define GPIO_SET_PIN ENABLE
 #define GPIO_RESET_PIN DISABLE
 
 #define READ_BIT(REG, INDEX)                                (REG & (1u << INDEX))
+#define NULL												(void *) 0
 
 #define GPIO_GET_INDEX(__gpio_address__)                                       \
   (((__gpio_address__) == (GPIOA))   ? 0u                                      \

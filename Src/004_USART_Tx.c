@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-char msg[1024] = "UART Tx testing...\n\r";
+char msg[1024] = "Hello";
 
 void delay(void) {
 	for (uint32_t i = 0; i < 500000 / 4; i++) {
@@ -13,10 +13,10 @@ void delay(void) {
 }
 
 void USART2_Init(USART_Handle_s * USART2_handle) {
-	USART2_handle->USARTx_p = USART2;
+	USART2_handle->USARTx_p = USART1;
 	USART2_handle->USART_Config.USART_WordLength = USART_WORDLEN_8BITS;
 	USART2_handle->USART_Config.USART_BaudRate = USART_STD_BAUD_9600;
-	USART2_handle->USART_Config.USART_Mode = USART_MODE_TXRX;
+	USART2_handle->USART_Config.USART_Mode = USART_MODE_ONLY_TX;
 	USART2_handle->USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
 	USART2_handle->USART_Config.USART_ParityControl = USART_PARITY_DISABLE;
 	USART2_handle->USART_Config.USART_HwFlowControl = USART_HW_FLOW_CTRL_NONE;
@@ -26,7 +26,7 @@ void USART2_Init(USART_Handle_s * USART2_handle) {
 void USART2_GPIO_Init() {
 	GPIO_Handle_s USART_GPIO;
 	USART_GPIO.GPIOx_p = GPIOA;
-	USART_GPIO.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_2;
+	USART_GPIO.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_9;
 	USART_GPIO.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_ALT_PUSH_PULL;
 	USART_GPIO.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
 	USART_GPIO.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
@@ -36,9 +36,9 @@ void USART2_GPIO_Init() {
 	/* USART Tx Init */
 	GPIO_Init(&USART_GPIO);
 
-	USART_GPIO.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_3;
+	USART_GPIO.GPIO_PinConfig.GPIOPinNumber = GPIO_PIN_10;
 	USART_GPIO.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_INPUT;
-	USART_GPIO.GPIO_PinConfig.GPIOPinPull = GPIO_PULL_UP;
+	USART_GPIO.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
 
 	/* USART Rx Init */
 	GPIO_Init(&USART_GPIO);
@@ -64,12 +64,12 @@ int main(void) {
 	GPIO_BtnInit();
 	USART2_GPIO_Init();
 	USART2_Init(&USART2_handle);
-	USART_PeripheralControl(USART2, ENABLE);
-
+	USART_PeripheralControl(USART1, ENABLE);
 
 	while (1) {
 		if (GPIO_ReadInputPin(GPIOB, GPIO_PIN_0) == GPIO_RESET_PIN) {
-			USART_Tx(&USART2_handle, (uint8_t*) msg, strlen(msg));
+			delay();
+			USART_Tx(&USART2_handle, (uint8_t*) "Hello", 6);
 		}
 	}
 }
