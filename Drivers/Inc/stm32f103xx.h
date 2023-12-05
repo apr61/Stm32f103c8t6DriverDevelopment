@@ -28,9 +28,22 @@
 
 #include <stdint.h>
 
-typedef enum { FLAG_RESET = 0, FLAG_SET } FlagValue_e;
+typedef enum {FLAG_RESET, FLAG_SET} FlagValue_e;
+typedef enum {DISABLE, ENABLE} Status_e;
 
-typedef enum { DISABLE = 0, ENABLE } PinStatus_e;
+// Some general macros
+#define SET                                  1u
+#define RESET                                0
+#define GPIO_SET_PIN                         1u
+#define GPIO_RESET_PIN                       0
+
+#define READ_BIT(REG, INDEX)                 (REG & (1u << INDEX))
+
+#define GPIO_GET_INDEX(__gpio_address__)   (((__gpio_address__) == (GPIOA))? 0u :\
+                                            ((__gpio_address__) == (GPIOB))? 1u :\
+                                            ((__gpio_address__) == (GPIOC))? 2u :\
+                                            ((__gpio_address__) == (GPIOD))? 3u :4u)
+
 
 // Some general macros
 #define SET 1
@@ -158,6 +171,20 @@ typedef struct {
   volatile uint32_t PR;    /* Pending register , Address offset : 0x14 */
 } EXTI_RegDef_t;
 
+
+/* I2C Register Def */
+typedef struct {
+  volatile uint32_t CR1; /* Control register 1, Address offset : 0x00 */
+  volatile uint32_t CR2; /* Control register 2 , Address offset : 0x04 */
+  volatile uint32_t OAR1; /* Own address register 1 , Address offset : 0x08 */
+  volatile uint32_t OAR2; /* Own address register 2 , Address offset : 0x0C */
+  volatile uint32_t DR; /* Data register , Address offset : 0x10 */
+  volatile uint32_t SR1; /* Status register 1 , Address offset : 0x14 */
+  volatile uint32_t SR2; /* Status register 2 , Address offset : 0x18 */
+  volatile uint32_t CCR; /* Clock control register , Address offset : 0x1C */
+  volatile uint32_t TRISE; /* TRISE register , Address offset : 0x20 */
+} I2C_RegDef_s;
+
 /* USART Register */
 typedef struct {
   volatile uint32_t SR;   /* Status register , Address offset : 0x00 */
@@ -169,6 +196,7 @@ typedef struct {
   volatile uint32_t GTPR; /* Guard time and prescaler register, Address offset : 0x18 */
 } USART_RegDef_s;
 
+
 /* GPIO Peripheral defines */
 
 #define GPIOA                                              ((GPIO_RegDef_s *)GPIOA_BASE_ADDR)
@@ -177,12 +205,17 @@ typedef struct {
 #define GPIOD                                              ((GPIO_RegDef_s *)GPIOD_BASE_ADDR)
 #define GPIOE                                              ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
 
+
+#define I2C1                                 ((I2C_RegDef_s *)I2C1_BASE_ADDR);
+#define I2C2                                 ((I2C_RegDef_s *)I2C2_BASE_ADDR);
+
 #define RCC                                                ((RCC_RegDef_t *)RCC_BASE_ADDR)
 #define EXTI                                               ((EXTI_RegDef_t *)EXTI_BASE_ADDR)
 #define AFIO                                               ((AFIO_RegDef_s *)AFIO_BASE_ADDR)
 #define USART1                                             ((USART_RegDef_s *)USART1_BASE_ADDR)
 #define USART2                                             ((USART_RegDef_s *)USART2_BASE_ADDR)
 #define USART3                                             ((USART_RegDef_s *)USART3_BASE_ADDR)
+
 
 /*
     Clock enable macros for GPIO, AFIO
@@ -263,6 +296,13 @@ do {                                                                           \
 } while (0)
 
 /*
+    I2C Reset
+*/
+
+#define I2C1_REG_RESET()                     do{(RCC->APB1RSTR |= (1u << 21u)); (RCC->APB1RSTR &= ~(1u << 21u));} while(0)
+#define I2C2_REG_RESET()                     do{(RCC->APB1RSTR |= (1u << 22u)); (RCC->APB1RSTR &= ~(1u << 22u));} while(0)
+
+/*
     Clock enable macros for I2C
 */
 
@@ -330,6 +370,64 @@ do {                                                                           \
 #define USART_SR_LBD_POS                                   8u
 #define USART_SR_CTS_POS                                   9u
 
+
+#define I2C_CR1_PE_POS                       0u
+#define I2C_CR1_SMBUS_POS                    1u
+#define I2C_CR1_SMBTYPE_POS                  3u
+#define I2C_CR1_ENARP_POS                    4u
+#define I2C_CR1_ENPEC_POS                    5u
+#define I2C_CR1_ENGC_POS                     6u
+#define I2C_CR1_NOSTRETCH_POS                7u
+#define I2C_CR1_START_POS                    8u
+#define I2C_CR1_STOP_POS                     9u
+#define I2C_CR1_ACK_POS                      10u
+#define I2C_CR1_POS_POS                      11u
+#define I2C_CR1_PEC_POS                      12u
+#define I2C_CR1_ALERT_POS                    13u
+#define I2C_CR1_SWRST_POS                    15u
+
+#define I2C_CR2_FREQ_POS                     0u
+#define I2C_CR2_TERREN_POS                   8u
+#define I2C_CR2_TEVTEN_POS                   9u
+#define I2C_CR2_ITBUFEN_POS                  10u
+#define I2C_CR2_DMAEN_POS                    11u
+#define I2C_CR2_LAST_POS                     12u
+
+#define I2C_OAR1_ADD0_POS                    0u
+#define I2C_OAR1_ADD1_POS                    1u
+#define I2C_OAR1_ADD8_POS                    8u
+#define I2C_OAR1_ADDMODE_POS                 15u
+
+#define I2C_OAR2_ENDUAL_POS                  0u
+#define I2C_OAR2_ADD2_POS                    1u
+
+#define I2C_SR1_SB_POS                       0u
+#define I2C_SR1_ADDR_POS                     1u
+#define I2C_SR1_BTF_POS                      2u
+#define I2C_SR1_ADD10_POS                    3u
+#define I2C_SR1_STOPF_POS                    4u
+#define I2C_SR1_RxNE_POS                     6u
+#define I2C_SR1_TxE_POS                      7u
+#define I2C_SR1_BERR_POS                     8u
+#define I2C_SR1_RLO_POS                      9u
+#define I2C_SR1_AF_POS                       10u
+#define I2C_SR1_OVR_POS                      11u
+#define I2C_SR1_PECERR_POS                   12u
+#define I2C_SR1_TIMEOUT_POS                  14u
+#define I2C_SR1_SMBALERT_POS                 15u
+
+#define I2C_SR2_MSL_POS                      0u
+#define I2C_SR2_BUSY_POS                     1u
+#define I2C_SR2_TRA_POS                      2u
+#define I2C_SR2_GENCALL_POS                  4u
+#define I2C_SR2_SMBDEFAUL_POS                5u
+#define I2C_SR2_SMBHOST_POS                  6u
+#define I2C_SR2_DUALF_POS                    7u
+#define I2C_SR2_PEC_POS                      8u
+
+#define I2C_CCR_DUTY_POS                     14u
+#define I2C_CCR_F_S_POS                      15u
+
 /*
     USART CR1 Register bit index
 */
@@ -347,6 +445,7 @@ do {                                                                           \
 #define USART_CR1_WAKE_POS                                 11u
 #define USART_CR1_M_POS                                    12u
 #define USART_CR1_UE_POS                                   13u
+
 
 /*
     USART CR2 Register bit index
