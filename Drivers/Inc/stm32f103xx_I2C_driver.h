@@ -14,7 +14,7 @@ typedef struct
 } I2C_Config_s;
 
 typedef struct{
-	I2c_RegDef_s * I2Cx_p;  /* I2C Instance address */
+	I2C_RegDef_s * I2Cx_p;  /* I2C Instance address */
 	I2C_Config_s I2C_Config;
 } I2C_Handle_s;
 
@@ -73,5 +73,7 @@ void I2C_MasterReceiveData(I2C_Handle_s * I2C_Handle_p, uint8_t * RxBuffer_p,uin
 void I2C_IRQ_Config(uint8_t IRQ_Number_u8, Status_e EnOrDi_e);
 void I2C_IRQ_Priority(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8);
 
+/* Other I2C API's */
+void I2C_ManageAcking(I2C_RegDef_s * I2Cx_p, I2C_ACK_Control_e Ack_Status);
 
 #endif

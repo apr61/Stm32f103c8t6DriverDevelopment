@@ -1,0 +1,110 @@
+/*
+ * 005_I2C_Master_send.c
+ *
+ *  Created on: Dec 5, 2023
+ *      Author: Pradeep
+ */
+
+#include "stm32f103xx.h"
+#include "stm32f103xx_USART_driver.h"
+#include "stm32f103xx_GPIO_driver.h"
+#include "stm32f103xx_I2C_driver.h"
+
+#define USART1_RX_PIN  				GPIO_PIN_10
+#define USART1_TX_PIN  				GPIO_PIN_9
+#define SWITCH		   				GPIO_PIN_0
+#define LED		 	   				GPIO_PIN_5
+#define	I2C1_SCL	   				GPIO_PIN_6
+#define	I2C1_SDA	   				GPIO_PIN_7
+#define DS1307_ADDRESS	   			0xD0 //11010000
+
+void delay(void) {
+	for (uint32_t i = 0; i < 500000 / 4; i++) {
+		;
+	}
+}
+
+void USART1_Init(USART_Handle_s *USART1_handle) {
+	USART1_handle->USARTx_p = USART1;
+	USART1_handle->USART_Config.USART_WordLength = USART_WORDLEN_8BITS;
+	USART1_handle->USART_Config.USART_BaudRate = USART_STD_BAUD_9600;
+	USART1_handle->USART_Config.USART_Mode = USART_MODE_TXRX;
+	USART1_handle->USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
+	USART1_handle->USART_Config.USART_ParityControl = USART_PARITY_DISABLE;
+	USART1_handle->USART_Config.USART_HwFlowControl = USART_HW_FLOW_CTRL_NONE;
+	USART_Init(USART1_handle);
+}
+
+void USART1_GPIO_Init() {
+	GPIO_Handle_s USART_GPIO;
+	USART_GPIO.GPIOx_p = GPIOA;
+	USART_GPIO.GPIO_PinConfig.GPIOPinNumber = USART1_TX_PIN;
+	USART_GPIO.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_ALT_PUSH_PULL;
+	USART_GPIO.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
+	USART_GPIO.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
+
+	GPIO_PCLK_Control(GPIOA, ENABLE);
+
+	/* USART Tx Init */
+	GPIO_Init(&USART_GPIO);
+
+	USART_GPIO.GPIO_PinConfig.GPIOPinNumber = USART1_RX_PIN;
+	USART_GPIO.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_INPUT;
+	USART_GPIO.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
+
+	/* USART Rx Init */
+	GPIO_Init(&USART_GPIO);
+}
+
+void GPIO_BtnLedInit(void) {
+	GPIO_Handle_s GPIO_Btn, GPIO_Led;
+
+	GPIO_Btn.GPIOx_p = GPIOB;
+	GPIO_Btn.GPIO_PinConfig.GPIOPinNumber = SWITCH;
+	GPIO_Btn.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_INPUT;
+	GPIO_Btn.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
+	GPIO_Btn.GPIO_PinConfig.GPIOPinPull = GPIO_PULL_UP;
+
+	GPIO_Led.GPIOx_p = GPIOA;
+	GPIO_Led.GPIO_PinConfig.GPIOPinNumber = LED;
+	GPIO_Led.GPIO_PinConfig.GPIOPinMode = GPIO_MODE_OUT_PUSH_PULL;
+	GPIO_Led.GPIO_PinConfig.GPIOPinSpeed = GPIO_SPEED_HIGH;
+	GPIO_Led.GPIO_PinConfig.GPIOPinPull = GPIO_NO_PULL;
+
+	GPIO_PCLK_Control(GPIOB, ENABLE);
+	GPIO_PCLK_Control(GPIOA, ENABLE);
+
+	GPIO_Init(&GPIO_Btn);
+	GPIO_Init(&GPIO_Led);
+}
+
+void I2C1_GPIO_Init(void)
+{
+
+}
+
+void I2C1_Init(I2C_Handle_s * I2C1_handle)
+{
+
+}
+
+int main(void) {
+	USART_Handle_s USART1_handle;
+	I2C_Handle_s I2C1_handle;
+
+	GPIO_BtnLedInit();
+
+	USART1_GPIO_Init();
+	USART1_Init(&USART1_handle);
+	USART_PeripheralControl(USART1_handle.USARTx_p, ENABLE);
+
+	I2C1_GPIO_Init();
+	I2C1_Init(&I2C1_handle);
+	I2C_PERIPH_Enable(I2C1_handle.I2Cx_p, ENABLE);
+
+	while(1)
+	{
+
+	}
+}
+

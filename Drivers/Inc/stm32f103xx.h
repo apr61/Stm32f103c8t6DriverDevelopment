@@ -44,22 +44,9 @@ typedef enum {DISABLE, ENABLE} Status_e;
                                             ((__gpio_address__) == (GPIOC))? 2u :\
                                             ((__gpio_address__) == (GPIOD))? 3u :4u)
 
-
-// Some general macros
-#define SET 1
-#define RESET 0
-#define GPIO_SET_PIN ENABLE
-#define GPIO_RESET_PIN DISABLE
-
-#define READ_BIT(REG, INDEX)                                (REG & (1u << INDEX))
 #define NULL												(void *) 0
 
-#define GPIO_GET_INDEX(__gpio_address__)                                       \
-  (((__gpio_address__) == (GPIOA))   ? 0u                                      \
-   : ((__gpio_address__) == (GPIOB)) ? 1u                                      \
-   : ((__gpio_address__) == (GPIOC)) ? 2u                                      \
-   : ((__gpio_address__) == (GPIOD)) ? 3u                                      \
-                                     : 4u)
+
 
 /* Arm Cortex Mx NVIC ISERx register - Set */
 #define NVIC_ISER0 ((volatile uint32_t *)0xE000E100u) /* 0 - 31 IRQs */
@@ -206,8 +193,8 @@ typedef struct {
 #define GPIOE                                              ((GPIO_RegDef_s *)GPIOE_BASE_ADDR)
 
 
-#define I2C1                                 ((I2C_RegDef_s *)I2C1_BASE_ADDR);
-#define I2C2                                 ((I2C_RegDef_s *)I2C2_BASE_ADDR);
+#define I2C1                                 			   ((I2C_RegDef_s *)I2C1_BASE_ADDR)
+#define I2C2                                 			   ((I2C_RegDef_s *)I2C2_BASE_ADDR)
 
 #define RCC                                                ((RCC_RegDef_t *)RCC_BASE_ADDR)
 #define EXTI                                               ((EXTI_RegDef_t *)EXTI_BASE_ADDR)

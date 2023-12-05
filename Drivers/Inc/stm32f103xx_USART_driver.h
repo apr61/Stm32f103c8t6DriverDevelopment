@@ -102,8 +102,8 @@ typedef struct {
 /********************************* API's ************************************/
 
 /* USART Peripheral Clock Control */
-void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e);
-void USART_PeripheralControl(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e);
+void USART_PCLK_Control(USART_RegDef_s *USARTx_p, Status_e EnOrDi_e);
+void USART_PeripheralControl(USART_RegDef_s *USARTx_p, Status_e EnOrDi_e);
 
 /* USART Init and Deinit */
 void USART_Init(USART_Handle_s * USART_Handle_p);
@@ -117,7 +117,7 @@ uint8_t USART_TxIT(USART_Handle_s *USART_Handle_p, uint8_t * TxBuffer_p, uint32_
 uint8_t USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t * RxBuffer_p, uint32_t Len_u32);
 
 /* USART interrupt Configuration and handling */
-void USART_IRQ_Config(uint8_t IRQ_Number_u8, uint8_t EnOrDi_u8);
+void USART_IRQ_Config(uint8_t IRQ_Number_u8, Status_e EnOrDi_e);
 void USART_IRQ_Priority(uint8_t IRQ_Number_u8, uint8_t IRQ_Priority_u8);
 void USART_IRQ_Handling(USART_Handle_s * USART_Handle_p);
 

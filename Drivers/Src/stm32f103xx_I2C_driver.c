@@ -10,6 +10,7 @@
 /********************************* Includes ************************************/
 #include "stm32f103xx.h"
 #include "stm32f103xx_I2C_driver.h"
+#include "stm32f103xx_RCC_driver.h"
 
 /* Private function declarations */
 static void I2C_GenerateStartCondition(I2C_RegDef_s * I2Cx_p);
@@ -67,7 +68,7 @@ void I2C_Init(I2C_Handle_s * I2C_Handle_p)
 		/* Standard mode */
 		/* By default mode is in Standard 0 */
 		/* Calculate CCR value */
-		CCR_Value_u16 = (RCC_GetPCLK1Freq() / (2 * I2C_Handle_p->I2C_Config.I2C_SCL_Speed));
+		CCR_Value_u16 = (RCC_GetPCLK1Value() / (2 * I2C_Handle_p->I2C_Config.I2C_SCL_Speed));
 		TempReg_u32 |= (CCR_Value_u16 & 0xFFF);
 	} 
 	else
@@ -80,46 +81,46 @@ void I2C_Init(I2C_Handle_s * I2C_Handle_p)
 		if(I2C_Handle_p->I2C_Config.I2C_FmDutyCycle == I2C_FM_DUTY_CYCLE_2)
 		{
 			/* Fm mode duty cycle = 0 */
-			CCR_Value_u16 = (RCC_GetPCLK1Freq() / (3 * I2C_Handle_p->I2C_Config.I2C_SCL_Speed));
+			CCR_Value_u16 = (RCC_GetPCLK1Value() / (3 * I2C_Handle_p->I2C_Config.I2C_SCL_Speed));
 		}
 		else
 		{
 			/* Fm mode duty cycle = 1 */
-			CCR_Value_u16 = (RCC_GetPCLK1Freq() / (25 * I2C_Handle_p->I2C_Config.I2C_SCL_Speed));
+			CCR_Value_u16 = (RCC_GetPCLK1Value() / (25 * I2C_Handle_p->I2C_Config.I2C_SCL_Speed));
 		}
 		TempReg_u32 |= (CCR_Value_u16 & 0xFFF);
 	}
-	I2C_Handle_p->I2cx_p->CCR = TempReg_u32;
+	I2C_Handle_p->I2Cx_p->CCR = TempReg_u32;
 	
 	/* 2. Configure the Speed of SCLK (SCL) */
 	TempReg_u32 = 0;
-	TempReg_u32 = (RCC_GetPCLK1Freq() / 1000000u);
-	I2C_Handle_p->I2cx_p->CR2 = (TempReg_u32 & 0x3F);
+	TempReg_u32 = (RCC_GetPCLK1Value() / 1000000u);
+	I2C_Handle_p->I2Cx_p->CR2 = (TempReg_u32 & 0x3F);
 	
 	/* 3. Configure the device address (When device is slave) */
 	TempReg_u32 = 0;
 	TempReg_u32 |= (I2C_Handle_p->I2C_Config.I2C_DeviceAddress << 1u);
 	TempReg_u32 |= (1u << 14u); /* Mentioned in Reference Manual */
-	I2C_Handle_p->I2cx_p->OAR1 |= TempReg_u32;
+	I2C_Handle_p->I2Cx_p->OAR1 |= TempReg_u32;
 	
 	/* 4. Enable ACK */
 	TempReg_u32 = 0;
 	TempReg_u32 |= (I2C_Handle_p->I2C_Config.I2C_ACK_Control << I2C_CR1_ACK_POS);
-	I2C_Handle_p->I2cx_p->CR1 |= TempReg_u32;
+	I2C_Handle_p->I2Cx_p->CR1 |= TempReg_u32;
 	
 	/* 5. Configure the rise time for I2C Pins (Standard or Fast) */
 	TempReg_u32 = 0;
 	if(I2C_Handle_p->I2C_Config.I2C_SCL_Speed <= I2C_SCL_SPEED_SM_100K)
 	{
 		/* Standard mode */
-		TempReg_u32 = ((RCC_GetPCLK1Freq() * 1000u) / 1000000000u);
+		TempReg_u32 = ((RCC_GetPCLK1Value() * 1000u) / 1000000000u);
 	}
 	else
 	{
 		/* Fast mode */
-		TempReg_u32 = ((RCC_GetPCLK1Freq() * 300u) / 1000000000u);
+		TempReg_u32 = ((RCC_GetPCLK1Value() * 300u) / 1000000000u);
 	}
-	I2C_Handle_p->I2cx_p->TRISE = (TempReg_u32 & 0x3Fu);
+	I2C_Handle_p->I2Cx_p->TRISE = (TempReg_u32 & 0x3Fu);
 	
 }/* END of I2C_Init */
 
@@ -150,7 +151,7 @@ void I2C_MasterSendData(I2C_Handle_s * I2C_Handle_p, uint8_t * TxBuffer_p,uint32
 	I2C_CompleteAddressPhase(I2C_Handle_p->I2Cx_p, SlaveAddress, I2C_Write_Mode);
 
 	// 4. Check wheather the address phase is completed by checking the ADDR flag of SR1
-	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_ADDR_POS) == SET));
+	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_ADDR_POS) == SET);
 
 	// 5. Clear the ADDR flag of SR1 according to software sequence
 	// NOTE : Untill ADDR is cleared, SCL will be streched(Pulled LOW)
@@ -159,7 +160,7 @@ void I2C_MasterSendData(I2C_Handle_s * I2C_Handle_p, uint8_t * TxBuffer_p,uint32
 	// 6. Send data until Len_u32 == 0
 	while(Len_u32 > 0)
 	{	
-		while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_TXE_POS) == SET));
+		while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_TxE_POS) == SET);
 		I2C_Handle_p->I2Cx_p->DR = *TxBuffer_p;
 		TxBuffer_p++;
 		Len_u32--;
@@ -169,7 +170,7 @@ void I2C_MasterSendData(I2C_Handle_s * I2C_Handle_p, uint8_t * TxBuffer_p,uint32
 	// NOTE : Until TXE = 1, BTF = 1, means DR are empty and Next Byte Transfer should begin
 	// When BTF = 1, SCL will be streched(Pulled LOW)
 	
-	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_TXE_POS) == SET);
+	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_TxE_POS) == SET);
 	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_BTF_POS) == SET);
 
 	// 8. Generate stop condition
@@ -186,7 +187,7 @@ void I2C_MasterSendData(I2C_Handle_s * I2C_Handle_p, uint8_t * TxBuffer_p,uint32
 void I2C_MasterReceiveData(I2C_Handle_s * I2C_Handle_p, uint8_t * RxBuffer_p,uint32_t Len_u32, uint8_t SlaveAddress, I2C_RepeatedStart_e RepeatedStart_e)
 {
 	// 1. Generate start condition
-	I2C_GenerateStartCondition(I2C_Handle_s->I2Cx_p);
+	I2C_GenerateStartCondition(I2C_Handle_p->I2Cx_p);
 	
 	// 2. Confirm whether Start condtion is completed by checking the SB flag of SR1
 	// NOTE : Until SB is cleared, SCL will be streched(Pulled LOW)
@@ -196,7 +197,7 @@ void I2C_MasterReceiveData(I2C_Handle_s * I2C_Handle_p, uint8_t * RxBuffer_p,uin
 	I2C_CompleteAddressPhase(I2C_Handle_p->I2Cx_p, SlaveAddress, I2C_Read_Mode);
 
 	// 4. Check wheather the address phase is completed by checking the ADDR flag of SR1
-	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_ADDR_POS) == SET));
+	while(READ_BIT(I2C_Handle_p->I2Cx_p->SR1, I2C_SR1_ADDR_POS) == SET);
 
 	// Procedure for 1 byte of length
 	if(Len_u32 == 1)
@@ -251,7 +252,7 @@ void I2C_MasterReceiveData(I2C_Handle_s * I2C_Handle_p, uint8_t * RxBuffer_p,uin
 		}
 	}
 	// Enable Acknowledgement
-	if(I2C_Handle_p->I2C_Config.I2C_ACK_Control == I2C_ACK_Enable)
+	if(I2C_Handle_p->I2C_Config.I2C_ACK_Control == I2C_Ack_Enable)
 	{	
 		I2C_ManageAcking(I2C_Handle_p->I2Cx_p, I2C_Ack_Enable);
 	}

@@ -29,7 +29,7 @@
  Return           :    None
  Note              :    None
  */
-void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e) {
+void USART_PCLK_Control(USART_RegDef_s *USARTx_p, Status_e EnOrDi_e) {
 	if (ENABLE == EnOrDi_e) {
 		if (USART1 == USARTx_p) {
 			USART1_PCLK_EN();
@@ -58,7 +58,7 @@ void USART_PCLK_Control(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e) {
  Return           :    None
  Note             :    None
  */
-void USART_PeripheralControl(USART_RegDef_s *USARTx_p, PinStatus_e EnOrDi_e) {
+void USART_PeripheralControl(USART_RegDef_s *USARTx_p, Status_e EnOrDi_e) {
 	if (EnOrDi_e == ENABLE) {
 		USARTx_p->CR1 |= (1 << USART_CR1_UE_POS);
 	} else {
@@ -397,7 +397,7 @@ uint8_t USART_RxIT(USART_Handle_s *USART_Handle_p, uint8_t *RxBuffer_p,
  Return           :    None
  Note             :    None
  */
-void USART_IRQ_Config(uint8_t IRQ_Number_u8, PinStatus_e EnOrDi_e) {
+void USART_IRQ_Config(uint8_t IRQ_Number_u8, Status_e EnOrDi_e) {
 	if (EnOrDi_e == ENABLE) {
 		if (IRQ_Number_u8 <= 31u) {
 			*NVIC_ISER0 |= (uint32_t) (1 << IRQ_Number_u8);
